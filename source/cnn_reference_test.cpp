@@ -1,4 +1,4 @@
-﻿#include "layers/inc/ConvolutionalLayer.h"
+﻿#include "net/layers/inc/ConvolutionalLayer.h"
 
 using namespace std;
 
