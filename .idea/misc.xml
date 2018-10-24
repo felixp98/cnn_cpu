@@ -4,6 +4,10 @@
   <component name="CidrRootsConfiguration">
     <sourceRoots>
       <file path="$PROJECT_DIR$/source" />
+      <file path="$PROJECT_DIR$/src" />
     </sourceRoots>
+    <libraryRoots>
+      <file path="$PROJECT_DIR$/tests/lib/googletest" />
+    </libraryRoots>
   </component>
 </project>
