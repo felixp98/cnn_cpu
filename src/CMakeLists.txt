@@ -6,7 +6,7 @@ set(HEADER_FILES
         net/layers/inc/MaxPoolLayer.h
         net/layers/inc/ReluLayer.h
         net/layers/inc/SoftmaxLayer.h
-    )
+        utils/inc/MnistDataLoader.h)
 
 set(SOURCE_FILES
         net/layers/src/ConvolutionalLayer.cpp
@@ -14,7 +14,7 @@ set(SOURCE_FILES
         net/layers/src/MaxPoolLayer.cpp
         net/layers/src/ReluLayer.cpp
         net/layers/src/SoftmaxLayer.cpp
-    )
+        utils/src/MnistDataLoader.cpp)
 
 #if (EXISTS ${SOURCE_FILES})
     # The library contains header and source files.
