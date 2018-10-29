@@ -18,6 +18,7 @@ void ConvolutionalLayer::init()
 
 	//init in-/outputsize
 	if(getBeforeLayer() != nullptr){
+	    // Hidden Layer
         this->inputHeight = getBeforeLayer()->getInputHeight();
         this->inputWidth = getBeforeLayer()->getInputWidth();
         this->inputDepth = getBeforeLayer()->getInputDepth();
@@ -27,8 +28,12 @@ void ConvolutionalLayer::init()
     filters.resize(numFilters);
     for(int i=0; i<numFilters; ++i){
         filters[i] = arma::zeros(filterSize, filterSize, inputDepth);
-        filters[i].fill(0.5);
+        filters[i].fill(0.5); //Todo: fill with random values
     }
+
+    //Todo: remove on target
+    this->input = arma::zeros(32, 32, 3);
+    this->input.fill(0.4);
 
 }
 
@@ -41,7 +46,7 @@ void ConvolutionalLayer::feedForward()
                          (inputWidth - filterSize)/stride + 1,
                          numFilters);
 
-    std::cout << "initialized output cube" << std::endl;
+    std::cout << "input[0]: " << input[0] << std::endl;
 
     // Perform convolution for each filter.
     for (size_t fidx = 0; fidx < numFilters; fidx++)
@@ -55,11 +60,6 @@ void ConvolutionalLayer::feedForward()
                         ),
                         arma::vectorise(filters[fidx]));
     }
-
-    this->input = input;
-    this->output = output;
-
-    std::cout << "input[0]: " << input[0] << std::endl;
 
 }
 

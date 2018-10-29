@@ -11,6 +11,10 @@
 class Network{
 private:
     std::list<Layer*> layers;
+    std::list<arma::cube> trainData;
+    std::list<arma::cube> validationData;
+    std::list<arma::cube> testData;
+
     bool initialized = false;
     double error;
     size_t rawInputHeight;
@@ -22,8 +26,9 @@ private:
 
 public:
     void add(Layer* layer);
-    void setTrainData();
-    void setTestData();
+    void setTrainData(std::list<arma::cube> *trainData);
+    void setValidationData(std::list<arma::cube> *validationData);
+    void setTestData(std::list<arma::cube> *testData);
 
     void init();
     void trainEpoch();

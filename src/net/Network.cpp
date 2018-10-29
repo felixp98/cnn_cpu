@@ -22,12 +22,16 @@ void Network::add(Layer* layer) {
     layer->setAfterLayer(nullptr);
 }
 
-void Network::setTrainData() {
-    //Todo
+void Network::setTrainData(std::list<arma::cube> *trainData) {
+    this->trainData = *trainData;
 }
 
-void Network::setTestData() {
-    //Todo
+void Network::setValidationData(std::list<arma::cube> *validationData) {
+    this->validationData = *validationData;
+}
+
+void Network::setTestData(std::list<arma::cube> *testData) {
+    this->testData = *testData;
 }
 
 void Network::init() {
@@ -36,14 +40,23 @@ void Network::init() {
     for(auto& layer : layers){
         layer->init();
     }
+
+    std::cout << "Network initialized" << std::endl;
 }
 
 void Network::trainEpoch() {
+    //Todo: do following for whole training data
+    for(auto& layer : layers){
+        layer->feedForward();
+    }
 
+    for(auto& layer : layers){
+        layer->backprop();
+    }
 }
 
 double Network::testEpoch() {
-
+    return 0.0;
 }
 
 double Network::getError() const {
