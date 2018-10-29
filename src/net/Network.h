@@ -13,6 +13,10 @@ private:
     std::list<Layer*> layers;
     bool initialized = false;
     double error;
+    size_t rawInputHeight;
+    size_t rawInputWidth;
+    size_t rawInputDepth;
+
     //Todo: add train data
     //Todo: add test data
 
@@ -23,9 +27,21 @@ public:
 
     void init();
     void trainEpoch();
-    void testEpoch();
+    double testEpoch();
 
     double getError() const;
+
+    size_t getRawInputHeight() const;
+
+    void setRawInputHeight(size_t rawInputHeight);
+
+    size_t getRawInputWidth() const;
+
+    void setRawInputWidth(size_t rawInputWidth);
+
+    size_t getRawInputDepth() const;
+
+    void setRawInputDepth(size_t rawInputDepth);
 
 };
 

@@ -12,12 +12,18 @@ int main()
 	cout << "CNN Reference Test CPU:" << std::endl;
 
     auto* network = new Network();
-    network->add(new ConvolutionalLayer(5, 5, 32, 32, 3));
+    network->add(new ConvolutionalLayer(5, 5, 1));
     network->add(new MaxPoolLayer());
     network->add(new ReluLayer());
     network->add(new FullyConnectedLayer());
     network->add(new SoftmaxLayer());
     network->init();
+
+
+    do {
+        network->trainEpoch();
+    }while (network->testEpoch() > 10.0);
+
 
     delete network;
 

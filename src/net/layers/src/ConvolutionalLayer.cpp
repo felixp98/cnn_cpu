@@ -1,22 +1,28 @@
-#include "../inc/ConvolutionalLayer.h"
 #include <armadillo>
 #include <cmath>
 #include <vector>
 #include <net/layers/inc/ConvolutionalLayer.h>
 
 
-ConvolutionalLayer::ConvolutionalLayer(size_t filterSize, size_t numFilters, size_t inputHeight, size_t inputWidth, size_t inputDepth){
+ConvolutionalLayer::ConvolutionalLayer(size_t numFilters, size_t filterSize, size_t stride){
 	std::cout << "new ConvLayer" << std::endl;
+
+    this->numFilters = numFilters;
 	this->filterSize = filterSize;
-	this->numFilters = numFilters;
-	this->inputHeight = inputHeight;
-	this->inputWidth = inputWidth;
-	this->inputDepth = inputDepth;
+	this->stride = stride;
 }
 
 void ConvolutionalLayer::init()
 {
 	std::cout << "init conv" << std::endl;
+
+	//init in-/outputsize
+	if(getBeforeLayer() != nullptr){
+        this->inputHeight = getBeforeLayer()->getInputHeight();
+        this->inputWidth = getBeforeLayer()->getInputWidth();
+        this->inputDepth = getBeforeLayer()->getInputDepth();
+	}
+
     //init filters
     filters.resize(numFilters);
     for(int i=0; i<numFilters; ++i){

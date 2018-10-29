@@ -9,18 +9,14 @@
 class ConvolutionalLayer : public Layer
 {
 private:
-	arma::cube input;
-    arma::cube output;
-	size_t inputHeight;
-	size_t inputWidth;
-	size_t inputDepth;
 	size_t numFilters;
 	size_t filterSize;
 	size_t stride;
+
 	std::vector<arma::cube> filters;
 
 public:
-	ConvolutionalLayer(size_t filterSize, size_t numFilters, size_t inputHeight, size_t inputLength, size_t inputDepth);
+	ConvolutionalLayer(size_t numFilters, size_t filterSize, size_t stride);
 	
 	void init() override;
 	void feedForward() override;
