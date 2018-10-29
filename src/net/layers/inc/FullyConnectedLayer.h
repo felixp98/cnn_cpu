@@ -2,8 +2,9 @@
 #define FULLYCONNECTEDLAYER_H
 
 #include <iostream>
+#include "Layer.h"
 
-class FullyConnectedLayer
+class FullyConnectedLayer : public Layer
 {
 private:
     double input;
@@ -19,9 +20,9 @@ private:
 public:
     FullyConnectedLayer();
 
-    void init();
-    void feedForward();
-    void backprop();
+    void init() override;
+    void feedForward() override;
+    void backprop() override;
 };
 
 #endif //FULLYCONNECTEDLAYER_H

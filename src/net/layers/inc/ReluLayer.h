@@ -2,8 +2,9 @@
 #define RELULAYER_H
 
 #include <iostream>
+#include "Layer.h"
 
-class ReluLayer
+class ReluLayer : public Layer
 {
 private:
     double input;
@@ -19,9 +20,9 @@ private:
 public:
     ReluLayer();
 
-    void init();
-    void feedForward();
-    void backprop();
+    void init() override;
+    void feedForward() override;
+    void backprop() override;
 };
 
 #endif //RELULAYER_H

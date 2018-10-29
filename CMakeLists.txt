@@ -3,6 +3,9 @@ project(cnn_gpu)
 
 set(CMAKE_CXX_STANDARD 11)
 
+#find_package(Armadillo 6.5 REQUIRED)
+#include_directories(${ARMADILLO_INCLUDE_DIRS})
+
 set(SOURCE_FILES cnn_reference_test.cpp)
 add_executable(${CMAKE_PROJECT_NAME}_run ${SOURCE_FILES})
 

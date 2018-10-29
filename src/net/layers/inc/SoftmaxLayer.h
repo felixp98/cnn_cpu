@@ -2,8 +2,9 @@
 #define SOFTMAXLAYER_H
 
 #include <iostream>
+#include "Layer.h"
 
-class SoftmaxLayer
+class SoftmaxLayer : public Layer
 {
 private:
     double input;
@@ -19,9 +20,9 @@ private:
 public:
     SoftmaxLayer();
 
-    void init();
-    void feedForward();
-    void backprop();
+    void init() override;
+    void feedForward() override;
+    void backprop() override;
 };
 
 #endif //SOFTMAXLAYER_H

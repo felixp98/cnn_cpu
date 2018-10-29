@@ -2,8 +2,9 @@
 #define MAXPOOLLAYER_H
 
 #include <iostream>
+#include "Layer.h"
 
-class MaxPoolLayer
+class MaxPoolLayer : public Layer
 {
 private:
     double input;
@@ -19,9 +20,9 @@ private:
 public:
     MaxPoolLayer();
 
-    void init();
-    void feedForward();
-    void backprop();
+    void init() override;
+    void feedForward() override;
+    void backprop() override;
 };
 
 #endif //MAXPOOLLAYER_H

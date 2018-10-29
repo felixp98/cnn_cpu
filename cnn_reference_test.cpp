@@ -1,4 +1,5 @@
-﻿#include "net/layers/inc/ConvolutionalLayer.h"
+﻿#include <net/Network.h>
+#include "net/layers/inc/ConvolutionalLayer.h"
 #include "net/layers/inc/FullyConnectedLayer.h"
 #include "net/layers/inc/SoftmaxLayer.h"
 #include "net/layers/inc/MaxPoolLayer.h"
@@ -10,17 +11,15 @@ int main()
 {
 	cout << "CNN Reference Test CPU:" << std::endl;
 
-    auto* conv = new ConvolutionalLayer(5,5);
-    auto* pool = new MaxPoolLayer();
-    auto* relu = new ReluLayer();
-    auto* fullyConnected = new FullyConnectedLayer();
-    auto* softmax = new SoftmaxLayer();
+    auto* network = new Network();
+    network->add(new ConvolutionalLayer(5, 5, 32, 32, 3));
+    network->add(new MaxPoolLayer());
+    network->add(new ReluLayer());
+    network->add(new FullyConnectedLayer());
+    network->add(new SoftmaxLayer());
+    network->init();
 
-    delete conv;
-    delete pool;
-    delete relu;
-    delete fullyConnected;
-    delete softmax;
+    delete network;
 
 	return 0;
 }
