@@ -2,6 +2,7 @@
 // Created by felix on 28.10.18.
 //
 
+#include <utils/inc/Image.h>
 #include "Network.h"
 
 void Network::add(Layer* layer) {
@@ -15,22 +16,22 @@ void Network::add(Layer* layer) {
         beforeLayer->setAfterLayer(layer);
     }else{
         layer->setBeforeLayer(nullptr);
-        layer->setInputHeight(/*rawDataHeight*/ 32);
-        layer->setInputWidth(/*rawDataHeight*/ 32);
-        layer->setInputDepth(/*rawDataHeight*/ 3);
+        layer->setInputHeight(/*rawDataHeight*/ 28);
+        layer->setInputWidth(/*rawDataHeight*/ 28);
+        layer->setInputDepth(/*rawDataHeight*/ 1);
     }
     layer->setAfterLayer(nullptr);
 }
 
-void Network::setTrainData(std::list<arma::cube> *trainData) {
+void Network::setTrainData(std::vector<Image*> *trainData) {
     this->trainData = *trainData;
 }
 
-void Network::setValidationData(std::list<arma::cube> *validationData) {
+void Network::setValidationData(std::vector<Image*> *validationData) {
     this->validationData = *validationData;
 }
 
-void Network::setTestData(std::list<arma::cube> *testData) {
+void Network::setTestData(std::vector<Image*> *testData) {
     this->testData = *testData;
 }
 

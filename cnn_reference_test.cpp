@@ -1,4 +1,5 @@
 ﻿#include <net/Network.h>
+#include <utils/inc/MnistDataLoader.h>
 #include "net/layers/inc/ConvolutionalLayer.h"
 #include "net/layers/inc/FullyConnectedLayer.h"
 #include "net/layers/inc/SoftmaxLayer.h"
@@ -9,12 +10,21 @@ using std::cout;
 
 int main()
 {
-	cout << "CNN Reference Test CPU:" << std::endl;
+	cout << "CNN Reference Test CPU:" << endl;
 
-	//Todo: load Data
-	std::list<arma::cube> trainData;
-    std::list<arma::cube> validationData;
-    std::list<arma::cube> testData;
+    cout << "Loading Training Image Data..." << std::flush;
+    auto * dataLoader = new MnistDataLoader();
+    std::vector<Image*> trainData = dataLoader->readMnistData("/home/felix/MNIST/train-images-idx3-ubyte", "/home/felix/MNIST/train-labels-idx1-ubyte");
+    cout << " done" << endl;
+    std::vector<Image*> validationData;
+    cout << "Loading Test Image Data..." << std::flush;
+    std::vector<Image*> testData = dataLoader->readMnistData("/home/felix/MNIST/t10k-images-idx3-ubyte", "/home/felix/MNIST/t10k-labels-idx1-ubyte");
+    cout << " done" << endl;
+
+    //cout << "Label: " << trainData.at(0)->getLabel() << endl;
+    //trainData.at(0)->getImageData().print();
+    //cout << "Label: " << testData.at(0)->getLabel() << endl;
+    //testData.at(0)->getImageData().print();
 
     //create Network structure
     auto * network = new Network();
@@ -32,10 +42,10 @@ int main()
     network->init();
 
 
-    do {
+    /*do {
         network->trainEpoch();
     }while (network->testEpoch() > 10.0);
-
+    */
 
     delete network;
 

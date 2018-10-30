@@ -7,13 +7,14 @@
 
 #include <list>
 #include <net/layers/inc/Layer.h>
+#include "utils/inc/Image.h"
 
 class Network{
 private:
     std::list<Layer*> layers;
-    std::list<arma::cube> trainData;
-    std::list<arma::cube> validationData;
-    std::list<arma::cube> testData;
+    std::vector<Image*> trainData;
+    std::vector<Image*> validationData;
+    std::vector<Image*> testData;
 
     bool initialized = false;
     double error;
@@ -26,9 +27,9 @@ private:
 
 public:
     void add(Layer* layer);
-    void setTrainData(std::list<arma::cube> *trainData);
-    void setValidationData(std::list<arma::cube> *validationData);
-    void setTestData(std::list<arma::cube> *testData);
+    void setTrainData(std::vector<Image*> *trainData);
+    void setValidationData(std::vector<Image*> *validationData);
+    void setTestData(std::vector<Image*> *testData);
 
     void init();
     void trainEpoch();

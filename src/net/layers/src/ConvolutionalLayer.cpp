@@ -46,8 +46,6 @@ void ConvolutionalLayer::feedForward()
                          (inputWidth - filterSize)/stride + 1,
                          numFilters);
 
-    std::cout << "input[0]: " << input[0] << std::endl;
-
     // Perform convolution for each filter.
     for (size_t fidx = 0; fidx < numFilters; fidx++)
     {
