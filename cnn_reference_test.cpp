@@ -33,19 +33,19 @@ int main()
     network->setValidationData(&validationData);
     network->setTestData(&testData);
 
-    network->add(new ConvolutionalLayer(5, 5, 1));
-    network->add(new MaxPoolLayer());
-    network->add(new ReluLayer());
-    network->add(new FullyConnectedLayer());
-    network->add(new SoftmaxLayer());
+    network->add(new ConvolutionalLayer(10, 5, 1));
+    //network->add(new MaxPoolLayer());
+    //network->add(new ReluLayer());
+    //network->add(new FullyConnectedLayer());
+    //network->add(new SoftmaxLayer());
 
     network->init();
 
 
-    /*do {
+    do {
         network->trainEpoch();
     }while (network->testEpoch() > 10.0);
-    */
+
 
     delete network;
 

@@ -16,9 +16,9 @@ void Network::add(Layer* layer) {
         beforeLayer->setAfterLayer(layer);
     }else{
         layer->setBeforeLayer(nullptr);
-        layer->setInputHeight(/*rawDataHeight*/ 28);
-        layer->setInputWidth(/*rawDataHeight*/ 28);
-        layer->setInputDepth(/*rawDataHeight*/ 1);
+        layer->setInputHeight(trainData.at(0)->getImageData().n_rows);
+        layer->setInputWidth(trainData.at(0)->getImageData().n_cols);
+        layer->setInputDepth(trainData.at(0)->getImageData().n_slices);
     }
     layer->setAfterLayer(nullptr);
 }
@@ -46,14 +46,21 @@ void Network::init() {
 }
 
 void Network::trainEpoch() {
-    //Todo: do following for whole training data
-    for(auto& layer : layers){
-        layer->feedForward();
+    for (int i = 0; i < trainData.size(); i++) {
+        if(i%1000 == 0){std::cout << "[" << i << "|" << trainData.size() << "] - Feedforward" << "\r" << std::flush;}
+        for (auto &layer : layers) {
+            if(layer->getBeforeLayer() == nullptr){
+                layer->setInput(trainData.at(i)->getImageData());
+            }
+            layer->feedForward();
+        }
+        break; //Todo: remove on target
     }
 
-    for(auto& layer : layers){
+    //TODO: implement backpropagation
+    /*for(auto& layer : layers){
         layer->backprop();
-    }
+    }*/
 }
 
 double Network::testEpoch() {

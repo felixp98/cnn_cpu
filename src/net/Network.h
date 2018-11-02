@@ -22,9 +22,6 @@ private:
     size_t rawInputWidth;
     size_t rawInputDepth;
 
-    //Todo: add train data
-    //Todo: add test data
-
 public:
     void add(Layer* layer);
     void setTrainData(std::vector<Image*> *trainData);

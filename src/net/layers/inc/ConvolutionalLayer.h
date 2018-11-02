@@ -21,6 +21,8 @@ public:
 	void init() override;
 	void feedForward() override;
 	void backprop() override;
+
+	arma::cube feedForwardTesting(arma::cube input, std::vector<arma::cube> filter);
 };
 
 #endif //CONVOLUTIONALLAYER_H

@@ -84,6 +84,30 @@ public:
         return inputDepth;
     }
 
+    size_t getOutputHeight() const {
+        return outputHeight;
+    }
+
+    void setOutputHeight(size_t outputHeight) {
+        Layer::outputHeight = outputHeight;
+    }
+
+    size_t getOutputWidth() const {
+        return outputWidth;
+    }
+
+    void setOutputWidth(size_t outputWidth) {
+        Layer::outputWidth = outputWidth;
+    }
+
+    size_t getOutputDepth() const {
+        return outputDepth;
+    }
+
+    void setOutputDepth(size_t outputDepth) {
+        Layer::outputDepth = outputDepth;
+    }
+
     void setInputHeight(size_t inputHeight) {
         Layer::inputHeight = inputHeight;
     }
