@@ -7,9 +7,11 @@
 class MaxPoolLayer : public Layer
 {
 private:
+    size_t poolingSize;
+    size_t stride;
 
 public:
-    MaxPoolLayer();
+    MaxPoolLayer(size_t poolingSize, size_t stride);
 
     void init() override;
     void feedForward() override;

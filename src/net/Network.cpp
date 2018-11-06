@@ -46,8 +46,12 @@ void Network::init() {
 }
 
 void Network::trainEpoch() {
+    std::cout << "\r[1|" << trainData.size() << "] - Feedforward";
     for (int i = 0; i < trainData.size(); i++) {
-        if(i%1000 == 0){std::cout << "[" << i << "|" << trainData.size() << "] - Feedforward" << "\r" << std::flush;}
+        if((i+1)%100 == 0){
+            std::cout << "\r[" << i+1 << "|" << trainData.size() << "] - Feedforward";
+            std::cout.flush();
+        }
         for (auto &layer : layers) {
             if(layer->getBeforeLayer() == nullptr){
                 layer->setInput(trainData.at(i)->getImageData());

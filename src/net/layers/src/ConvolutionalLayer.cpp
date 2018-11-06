@@ -38,12 +38,9 @@ void ConvolutionalLayer::init()
     }
 }
 
-void ConvolutionalLayer::feedForward()
+void ConvolutionalLayer::feedForward(arma::cube& input)
 {
-	//set input if layer is hidden-layer
-	if(getBeforeLayer() != nullptr){
-	    input = getBeforeLayer()->getOutput();
-	}
+    this->input = input;
 
     // Output cube initialization.
     this->output = arma::zeros(outputHeight, outputWidth, outputDepth);
@@ -60,9 +57,6 @@ void ConvolutionalLayer::feedForward()
                         ),
                         arma::vectorise(filters[fidx]));
     }
-
-    //input.print();
-    //output.print();
 }
 
 void ConvolutionalLayer::backprop()
@@ -83,12 +77,6 @@ arma::cube ConvolutionalLayer::feedForwardTesting(arma::cube input, std::vector<
     outputWidth = (inputWidth - filterSize)/stride + 1;
     outputDepth = numFilters;
 
-    /*filters.resize(numFilters);
-    for(int i=0; i<numFilters; ++i){
-        filters[i] = arma::zeros(filterSize, filterSize, inputDepth);
-        filters[i].fill(0.5);
-    }*/
-
     // Output cube initialization.
     this->output = arma::zeros(outputHeight, outputWidth, outputDepth);
 
@@ -106,4 +94,18 @@ arma::cube ConvolutionalLayer::feedForwardTesting(arma::cube input, std::vector<
     }
 
     return output;
+}
+
+void ConvolutionalLayer::init_for_testing(size_t inputHeight, size_t inputWidth, size_t inputDepth,
+                                            std::vector<arma::cube>& filters)
+{
+    this->inputHeight = inputHeight;
+    this->inputWidth = inputWidth;
+    this->inputDepth = inputDepth;
+
+    outputHeight = (inputHeight - filterSize)/stride + 1;
+    outputWidth = (inputWidth - filterSize)/stride + 1;
+    outputDepth = numFilters;
+
+    this->filters = std::move(filters);
 }

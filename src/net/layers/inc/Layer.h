@@ -14,7 +14,6 @@ private:
     Layer* afterLayer = nullptr;
 
 protected:
-    size_t depth;
     arma::cube input;
     arma::cube output;
 
@@ -27,9 +26,8 @@ protected:
     size_t outputDepth;
 
 public:
-
     virtual void init() = 0;
-    virtual void feedForward() = 0;
+    virtual void feedForward(arma::cube& input) = 0;
     virtual void backprop() = 0;
 
     const arma::cube &getInput() const {
@@ -62,14 +60,6 @@ public:
 
     void setAfterLayer(Layer *afterLayer) {
         Layer::afterLayer = afterLayer;
-    }
-
-    size_t getDepth() const {
-        return depth;
-    }
-
-    void setDepth(size_t depth) {
-        Layer::depth = depth;
     }
 
     size_t getInputHeight() const {

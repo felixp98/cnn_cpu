@@ -7,10 +7,12 @@
 class FullyConnectedLayer : public Layer
 {
 private:
-
+    arma::mat weights;
+    arma::vec biases;
+    size_t depth;
 
 public:
-    FullyConnectedLayer();
+    FullyConnectedLayer(size_t depth);
 
     void init() override;
     void feedForward() override;

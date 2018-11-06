@@ -7,10 +7,10 @@
 class SoftmaxLayer : public Layer
 {
 private:
-
+    size_t numOutputNeurons;
 
 public:
-    SoftmaxLayer();
+    SoftmaxLayer(size_t numOutputNeurons);
 
     void init() override;
     void feedForward() override;
