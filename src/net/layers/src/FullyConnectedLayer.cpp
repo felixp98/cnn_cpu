@@ -31,17 +31,17 @@ void FullyConnectedLayer::init()
 
 arma::cube& FullyConnectedLayer::feedForward(arma::cube& input)
 {
-    //set input if layer is hidden-layer
-    if(getBeforeLayer() != nullptr){
-        input = getBeforeLayer()->getOutput();
-    }
+    this->input = input;
 
     output = arma::zeros(depth,1,1);
+    arma::vec vOutput = arma::zeros(depth);
 
     arma::vec vectorisedInput = arma::vectorise(input);
-    output.slice(0) = (weights * vectorisedInput) + biases;
+    vOutput = (weights * vectorisedInput) + biases;
 
-    output.print();
+    output.slice(0).col(0) = vOutput;
+
+    return output;
 }
 
 void FullyConnectedLayer::backprop()

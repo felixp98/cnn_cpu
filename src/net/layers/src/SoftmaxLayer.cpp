@@ -1,4 +1,5 @@
 #include "../inc/SoftmaxLayer.h"
+#include <math.h>
 
 SoftmaxLayer::SoftmaxLayer(size_t numOutputNeurons){
     std::cout << "new SoftmaxLayer" << std::endl;
@@ -24,21 +25,37 @@ void SoftmaxLayer::init()
 
 arma::cube& SoftmaxLayer::feedForward(arma::cube& input)
 {
-    //set input if layer is hidden-layer
-    if(getBeforeLayer() != nullptr){
-        input = getBeforeLayer()->getOutput();
-    }
+    this->input = input;
 
     output = arma::zeros(numOutputNeurons,1,1);
 
-    double expSum = arma::accu(arma::exp(arma::vectorise(input) - arma::max(arma::vectorise(input))));
-    std::cout << expSum << std::endl;
-    output.slice(0) = arma::exp(arma::vectorise(input) - arma::max(arma::vectorise(input)))/expSum;
+    arma::vec vectorisedInput = arma::vectorise(input);
+    double sumExp = 0.0;
+    for(size_t i = 0; i< vectorisedInput.size(); i++){
+        sumExp += exp(vectorisedInput.at(i));
+    }
 
-    output.print();
+    arma::vec vOutput = arma::zeros(numOutputNeurons);
+    for(size_t i = 0; i< vOutput.size(); i++){
+        vOutput(i) = exp(vectorisedInput.at(i))/sumExp;
+    }
+
+    output.slice(0).col(0) = vOutput;
+
+    return output;
 }
 
 void SoftmaxLayer::backprop()
 {
     std::cout << "backprop softmax" << std::endl;
+}
+
+void SoftmaxLayer::init_for_testing(size_t inputHeight, size_t inputWidth, size_t inputDepth){
+    this->inputHeight = inputHeight;
+    this->inputWidth = inputWidth;
+    this->inputDepth = inputDepth;
+
+    outputHeight = 1;
+    outputWidth = 1;
+    outputDepth = numOutputNeurons;
 }

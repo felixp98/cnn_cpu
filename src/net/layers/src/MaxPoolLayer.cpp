@@ -27,10 +27,7 @@ void MaxPoolLayer::init()
 
 arma::cube& MaxPoolLayer::feedForward(arma::cube& input)
 {
-    //set input if layer is hidden-layer
-    if(getBeforeLayer() != nullptr){
-        input = getBeforeLayer()->getOutput();
-    }
+    this->input = input;
 
     output = arma::zeros(outputHeight, outputWidth, outputDepth);
 
@@ -42,9 +39,21 @@ arma::cube& MaxPoolLayer::feedForward(arma::cube& input)
             }
         }
     }
+
+    return output;
 }
 
 void MaxPoolLayer::backprop()
 {
     std::cout << "backprop maxpool" << std::endl;
+}
+
+void MaxPoolLayer::init_for_testing(size_t inputHeight, size_t inputWidth, size_t inputDepth){
+    this->inputHeight = inputHeight;
+    this->inputWidth = inputWidth;
+    this->inputDepth = inputDepth;
+
+    outputHeight = (inputHeight - poolingSize)/stride + 1;
+    outputWidth = (inputWidth - poolingSize)/stride + 1;
+    outputDepth = inputDepth;
 }
