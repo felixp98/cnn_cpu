@@ -38,7 +38,7 @@ void ConvolutionalLayer::init()
     }
 }
 
-void ConvolutionalLayer::feedForward(arma::cube& input)
+arma::cube& ConvolutionalLayer::feedForward(arma::cube& input)
 {
     this->input = input;
 
@@ -57,6 +57,8 @@ void ConvolutionalLayer::feedForward(arma::cube& input)
                         ),
                         arma::vectorise(filters[fidx]));
     }
+
+    return output;
 }
 
 void ConvolutionalLayer::backprop()
@@ -64,7 +66,7 @@ void ConvolutionalLayer::backprop()
 	std::cout << "backprop conv" << std::endl;
 }
 
-arma::cube ConvolutionalLayer::feedForwardTesting(arma::cube input, std::vector<arma::cube> filter)
+/*arma::cube ConvolutionalLayer::feedForwardTesting(arma::cube input, std::vector<arma::cube> filter)
 {
     this->input = input;
     this->filters = filter;
@@ -94,7 +96,7 @@ arma::cube ConvolutionalLayer::feedForwardTesting(arma::cube input, std::vector<
     }
 
     return output;
-}
+}*/
 
 void ConvolutionalLayer::init_for_testing(size_t inputHeight, size_t inputWidth, size_t inputDepth,
                                             std::vector<arma::cube>& filters)

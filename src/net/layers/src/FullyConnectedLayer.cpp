@@ -29,7 +29,7 @@ void FullyConnectedLayer::init()
     biases = arma::zeros(depth);
 }
 
-void FullyConnectedLayer::feedForward()
+arma::cube& FullyConnectedLayer::feedForward(arma::cube& input)
 {
     //set input if layer is hidden-layer
     if(getBeforeLayer() != nullptr){

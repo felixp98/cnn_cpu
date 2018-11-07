@@ -9,7 +9,7 @@ void ReluLayer::init()
     std::cout << "init relu" << std::endl;
 }
 
-void ReluLayer::feedForward()
+arma::cube& ReluLayer::feedForward(arma::cube& input)
 {
     std::cout << "feedforward relu" << std::endl;
 }

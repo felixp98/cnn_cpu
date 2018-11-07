@@ -25,7 +25,7 @@ void MaxPoolLayer::init()
     outputDepth = inputDepth;
 }
 
-void MaxPoolLayer::feedForward()
+arma::cube& MaxPoolLayer::feedForward(arma::cube& input)
 {
     //set input if layer is hidden-layer
     if(getBeforeLayer() != nullptr){

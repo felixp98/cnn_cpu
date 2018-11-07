@@ -19,19 +19,19 @@ Image::Image(string label, arma::cube imageData) {
     this->imageData = imageData;
 }
 
-const string &Image::getLabel() const {
+string &Image::getLabel() {
     return label;
 }
 
-void Image::setLabel(const string &label) {
+void Image::setLabel(string &label) {
     Image::label = label;
 }
 
-const arma::cube &Image::getImageData() const {
+arma::cube & Image::getImageData() {
     return imageData;
 }
 
-void Image::setImageData(const arma::cube &imageData) {
+void Image::setImageData(arma::cube &imageData) {
     Image::imageData = imageData;
 }
 

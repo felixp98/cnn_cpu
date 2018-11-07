@@ -13,7 +13,7 @@ public:
     SoftmaxLayer(size_t numOutputNeurons);
 
     void init() override;
-    void feedForward() override;
+    arma::cube& feedForward(arma::cube& input) override;
     void backprop() override;
 };
 

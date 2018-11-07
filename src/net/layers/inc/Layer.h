@@ -27,26 +27,26 @@ protected:
 
 public:
     virtual void init() = 0;
-    virtual void feedForward(arma::cube& input) = 0;
+    virtual arma::cube& feedForward(arma::cube& input) = 0;
     virtual void backprop() = 0;
 
-    const arma::cube &getInput() const {
+    arma::cube &getInput() {
         return input;
     }
 
-    void setInput(const arma::cube &input) {
+    void setInput(arma::cube &input) {
         Layer::input = input;
     }
 
-    const arma::cube &getOutput() const {
+    arma::cube &getOutput() {
         return output;
     }
 
-    void setOutput(const arma::cube &output) {
+    void setOutput(arma::cube &output) {
         Layer::output = output;
     }
 
-    Layer *getBeforeLayer() const {
+    Layer *getBeforeLayer() {
         return beforeLayer;
     }
 
@@ -62,19 +62,19 @@ public:
         Layer::afterLayer = afterLayer;
     }
 
-    size_t getInputHeight() const {
+    size_t getInputHeight() {
         return inputHeight;
     }
 
-    size_t getInputWidth() const {
+    size_t getInputWidth() {
         return inputWidth;
     }
 
-    size_t getInputDepth() const {
+    size_t getInputDepth() {
         return inputDepth;
     }
 
-    size_t getOutputHeight() const {
+    size_t getOutputHeight() {
         return outputHeight;
     }
 
@@ -82,7 +82,7 @@ public:
         Layer::outputHeight = outputHeight;
     }
 
-    size_t getOutputWidth() const {
+    size_t getOutputWidth() {
         return outputWidth;
     }
 
@@ -90,7 +90,7 @@ public:
         Layer::outputWidth = outputWidth;
     }
 
-    size_t getOutputDepth() const {
+    size_t getOutputDepth() {
         return outputDepth;
     }
 

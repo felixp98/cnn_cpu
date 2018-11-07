@@ -50,7 +50,8 @@ TEST(layer_tests, convolution_test) {
     std::vector<arma::cube> filters;
     filters.push_back(filter);
 
-    arma::cube output = conv->feedForwardTesting(input, filters);
+    conv->init_for_testing(5,5,1,filters);
+    arma::cube output = conv->feedForward(input);
 
     EXPECT_EQ(1, output(0,0,0));
     EXPECT_EQ(1, output(0,1,0));

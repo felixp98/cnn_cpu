@@ -22,7 +22,7 @@ void SoftmaxLayer::init()
     outputDepth = numOutputNeurons;
 }
 
-void SoftmaxLayer::feedForward()
+arma::cube& SoftmaxLayer::feedForward(arma::cube& input)
 {
     //set input if layer is hidden-layer
     if(getBeforeLayer() != nullptr){

@@ -21,13 +21,13 @@ public:
     Image(arma::cube imageData);
     Image(string label, arma::cube imageData);
 
-    const string &getLabel() const;
+    string &getLabel();
 
-    void setLabel(const string &label);
+    void setLabel(string &label);
 
-    const arma::cube &getImageData() const;
+    arma::cube & getImageData();
 
-    void setImageData(const arma::cube &imageData);
+    void setImageData(arma::cube &imageData);
 };
 
 #endif //CNN_GPU_IMAGE_H

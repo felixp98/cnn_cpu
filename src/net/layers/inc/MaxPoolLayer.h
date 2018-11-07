@@ -14,7 +14,7 @@ public:
     MaxPoolLayer(size_t poolingSize, size_t stride);
 
     void init() override;
-    void feedForward() override;
+    arma::cube& feedForward(arma::cube& input) override;
     void backprop() override;
 };
 

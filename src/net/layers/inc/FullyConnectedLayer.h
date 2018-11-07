@@ -15,7 +15,7 @@ public:
     FullyConnectedLayer(size_t depth);
 
     void init() override;
-    void feedForward() override;
+    arma::cube& feedForward(arma::cube& input) override;
     void backprop() override;
 };
 

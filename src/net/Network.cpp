@@ -54,9 +54,10 @@ void Network::trainEpoch() {
         }
         for (auto &layer : layers) {
             if(layer->getBeforeLayer() == nullptr){
-                layer->setInput(trainData.at(i)->getImageData());
+                layer->feedForward(trainData.at(i)->getImageData());
+            }else {
+                layer->feedForward(layer->getBeforeLayer()->getOutput());
             }
-            layer->feedForward();
         }
         break; //Todo: remove on target
     }
