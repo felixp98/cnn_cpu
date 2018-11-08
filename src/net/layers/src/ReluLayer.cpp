@@ -11,7 +11,10 @@ void ReluLayer::init()
 
 arma::cube& ReluLayer::feedForward(arma::cube& input)
 {
-    std::cout << "feedforward relu" << std::endl;
+    output = arma::zeros(arma::size(input));
+    output = arma::max(input, output);
+
+    return output;
 }
 
 void ReluLayer::backprop()

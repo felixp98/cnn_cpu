@@ -9,7 +9,7 @@ set(HEADER_FILES
         net/layers/inc/MaxPoolLayer.h
         net/layers/inc/ReluLayer.h
         net/layers/inc/SoftmaxLayer.h
-        utils/inc/MnistDataLoader.h net/Network.h net/layers/inc/Layer.h utils/inc/Image.h)
+        utils/inc/MnistDataLoader.h net/Network.h net/layers/inc/Layer.h utils/inc/Image.h net/layers/inc/SigmoidLayer.h)
 
 set(SOURCE_FILES
         net/layers/src/ConvolutionalLayer.cpp
@@ -17,7 +17,7 @@ set(SOURCE_FILES
         net/layers/src/MaxPoolLayer.cpp
         net/layers/src/ReluLayer.cpp
         net/layers/src/SoftmaxLayer.cpp
-        utils/src/MnistDataLoader.cpp net/Network.cpp utils/src/Image.cpp)
+        utils/src/MnistDataLoader.cpp net/Network.cpp utils/src/Image.cpp net/layers/src/SigmoidLayer.cpp)
 
 #if (EXISTS ${SOURCE_FILES})
     # The library contains header and source files.

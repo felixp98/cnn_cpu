@@ -32,7 +32,7 @@ std::vector<Image*> MnistDataLoader::readMnistData(string pathToImageFile, strin
                     unsigned char temp=0;
                     imageFile.read((char*)&temp,sizeof(temp));
 
-                    tmpCube(r, c, 0) = (double)temp;
+                    tmpCube(r, c, 0) = temp/255.0;
                 }
             }
             data.push_back(new Image(tmpCube));

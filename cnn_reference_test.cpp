@@ -35,9 +35,11 @@ int main()
 
     network->add(new ConvolutionalLayer(10, 5, 1));
     network->add(new MaxPoolLayer(2, 2));
+    //network->add(new ReluLayer());
+    //network->add(new FullyConnectedLayer(100));
+    //network->add(new ReluLayer());
     network->add(new FullyConnectedLayer(10));
     //network->add(new ReluLayer());
-    //network->add(new FullyConnectedLayer());
     network->add(new SoftmaxLayer(10));
 
     network->init();

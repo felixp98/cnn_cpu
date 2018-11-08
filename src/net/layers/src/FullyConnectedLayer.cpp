@@ -41,6 +41,9 @@ arma::cube& FullyConnectedLayer::feedForward(arma::cube& input)
 
     output.slice(0).col(0) = vOutput;
 
+    output /= 100;
+
+
     return output;
 }
 

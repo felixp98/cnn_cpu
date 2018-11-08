@@ -42,6 +42,8 @@ arma::cube& SoftmaxLayer::feedForward(arma::cube& input)
 
     output.slice(0).col(0) = vOutput;
 
+    output.print();
+
     return output;
 }
 
