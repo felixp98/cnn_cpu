@@ -33,13 +33,13 @@ int main()
     network->setValidationData(&validationData);
     network->setTestData(&testData);
 
-    network->add(new ConvolutionalLayer(10, 5, 1));
-    network->add(new MaxPoolLayer(2, 2));
+    //network->add(new ConvolutionalLayer(10, 5, 1));
+    //network->add(new MaxPoolLayer(2, 2));
     //network->add(new ReluLayer());
-    //network->add(new FullyConnectedLayer(100));
-    //network->add(new ReluLayer());
+    network->add(new FullyConnectedLayer(1000));
+    network->add(new ReluLayer());
     network->add(new FullyConnectedLayer(10));
-    //network->add(new ReluLayer());
+    network->add(new ReluLayer());
     network->add(new SoftmaxLayer(10));
 
     network->init();

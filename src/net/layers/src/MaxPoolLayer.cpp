@@ -43,7 +43,7 @@ arma::cube& MaxPoolLayer::feedForward(arma::cube& input)
     return output;
 }
 
-void MaxPoolLayer::backprop()
+void MaxPoolLayer::backprop(arma::vec& upstreamGradient)
 {
     std::cout << "backprop maxpool" << std::endl;
 }

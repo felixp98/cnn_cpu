@@ -11,12 +11,23 @@ private:
     arma::vec biases;
     size_t depth;
 
+    arma::cube gradInput;
+    arma::mat gradWeights;
+    arma::vec gradBiases;
+
+    arma::cube accumulatedGradInput;
+    arma::mat accumulatedGradWeights;
+    arma::vec accumulatedGradBiases;
+
 public:
-    FullyConnectedLayer(size_t depth);
+    explicit FullyConnectedLayer(size_t depth);
 
     void init() override;
     arma::cube& feedForward(arma::cube& input) override;
-    void backprop() override;
+    void backprop(arma::vec& upstreamGradient) override;
+
+    void _resetAccumulatedGradients();
+    void UpdateWeightsAndBiases(size_t batchSize, double learningRate);
 };
 
 #endif //FULLYCONNECTEDLAYER_H

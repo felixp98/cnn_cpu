@@ -21,6 +21,9 @@ void SoftmaxLayer::init()
     outputHeight = 1;
     outputWidth = 1;
     outputDepth = numOutputNeurons;
+
+    softmaxScores = arma::zeros(numOutputNeurons);
+    softmaxLoss = arma::zeros(numOutputNeurons);
 }
 
 arma::cube& SoftmaxLayer::feedForward(arma::cube& input)
@@ -35,19 +38,20 @@ arma::cube& SoftmaxLayer::feedForward(arma::cube& input)
         sumExp += exp(vectorisedInput.at(i));
     }
 
-    arma::vec vOutput = arma::zeros(numOutputNeurons);
-    for(size_t i = 0; i< vOutput.size(); i++){
-        vOutput(i) = exp(vectorisedInput.at(i))/sumExp;
+    for(size_t i = 0; i< softmaxScores.size(); i++){
+        softmaxScores(i) = exp(vectorisedInput.at(i))/sumExp;
+        softmaxLoss(i) = -log(softmaxScores(i));
     }
 
-    output.slice(0).col(0) = vOutput;
+    output.slice(0).col(0) = softmaxScores;
 
     output.print();
+    softmaxLoss.print();
 
     return output;
 }
 
-void SoftmaxLayer::backprop()
+void SoftmaxLayer::backprop(arma::vec& upstreamGradient)
 {
     std::cout << "backprop softmax" << std::endl;
 }

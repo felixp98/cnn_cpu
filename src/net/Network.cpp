@@ -59,6 +59,14 @@ void Network::trainEpoch() {
                 layer->feedForward(layer->getBeforeLayer()->getOutput());
             }
         }
+        for(auto it=layers.rbegin(); it!=layers.rend(); ++it ){
+            Layer *& currentLayer = *it;
+            /*if(currentLayer->getAfterLayer() == nullptr){
+                currentLayer->backprop();
+            }else{
+                currentLayer->backprop()
+            }*/
+        }
         break; //Todo: remove on target
     }
 

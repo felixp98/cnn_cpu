@@ -14,7 +14,7 @@ public:
 
     void init() override;
     arma::cube& feedForward(arma::cube& input) override;
-    void backprop() override;
+    void backprop(arma::vec& upstreamGradient) override;
 };
 
 #endif //RELULAYER_H

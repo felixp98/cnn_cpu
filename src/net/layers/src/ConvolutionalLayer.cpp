@@ -61,7 +61,7 @@ arma::cube& ConvolutionalLayer::feedForward(arma::cube& input)
     return output;
 }
 
-void ConvolutionalLayer::backprop()
+void ConvolutionalLayer::backprop(arma::vec& upstreamGradient)
 {
 	std::cout << "backprop conv" << std::endl;
 }

@@ -28,7 +28,7 @@ protected:
 public:
     virtual void init() = 0;
     virtual arma::cube& feedForward(arma::cube& input) = 0;
-    virtual void backprop() = 0;
+    virtual void backprop(arma::vec& upstreamGradient) = 0;
 
     arma::cube &getInput() {
         return input;
