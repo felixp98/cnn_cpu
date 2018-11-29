@@ -93,7 +93,7 @@ void Network::train(size_t numEpochs) {
                 //break; //Todo: remove on target
             }
             //break;
-            //std::cout << cost_sum_minibatch << std::endl;
+            std::cout << cost_sum_minibatch << std::endl;
             cost_sum_minibatch = 0.0;
             for (auto &layer : layers) {
                 if (layer->getType() == FULLY_CONNECTED_LAYER) {

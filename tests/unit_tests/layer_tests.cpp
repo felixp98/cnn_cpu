@@ -187,12 +187,26 @@ TEST(layer_tests, fullyConnected_Big_Test) {
 
     fc->backprop(&(fc->getAfterLayer()->getUpstreamGradient()));
     arma::vec deltaError2 = fc->getDeltaError();
-    EXPECT_TRUE(std::abs(deltaError2(0) - ) < 0.0001);
-    EXPECT_TRUE(std::abs(deltaError2(1) - ) < 0.0001);
+    EXPECT_TRUE(std::abs(deltaError2(0) - (-0.006141312)) < 0.001);
+    EXPECT_TRUE(std::abs(deltaError2(1) - (-0.009836772)) < 0.001);
+    EXPECT_TRUE(std::abs(deltaError2(2) - (-0.000237022)) < 0.001);
 
+    arma::mat nablaWeights2 = fc->getNablaWeights();
+    EXPECT_TRUE(std::abs(nablaWeights2(0,0) - (-4.2989e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(0,1) - (-3.6848e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(0,2) - (-1.8424e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(0,3) - (-4.913e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(1,0) - (-6.8857e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(1,1) - (-5.9021e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(1,2) - (-2.951e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(1,3) - (-7.8694e-3)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(2,0) - (-1.6592e-4)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(2,1) - (-1.4221e-4)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(2,2) - (-7.1107e-5)) < 0.001);
+    EXPECT_TRUE(std::abs(nablaWeights2(2,3) - (-1.8962e-4)) < 0.001);
 }
 
-TEST(layer_tests, fullyConnected_Backward_Test){
+/*TEST(layer_tests, fullyConnected_Backward_Test){
     auto* fc = new FullyConnectedLayer(new SigmoidActivation(), 10);
     fc->init_for_testing(5,5,3);
 
@@ -249,4 +263,4 @@ TEST(layer_tests, fullyConnected_Backward_Test){
     approxNablaWeights.print();
 
     EXPECT_TRUE(arma::approx_equal(nablaWeights, approxNablaWeights, "absdiff", disturbance));
-}
+}*/
