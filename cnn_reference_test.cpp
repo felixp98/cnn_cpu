@@ -1,5 +1,7 @@
 ﻿#include <net/Network.h>
 #include <utils/inc/MnistDataLoader.h>
+#include <net/activation/inc/SigmoidActivation.h>
+#include <net/cost/inc/QuadraticCost.h>
 #include "net/layers/inc/ConvolutionalLayer.h"
 #include "net/layers/inc/FullyConnectedLayer.h"
 #include "net/layers/inc/SoftmaxLayer.h"
@@ -15,8 +17,15 @@ int main()
     cout << "Loading Training Image Data..." << std::flush;
     auto * dataLoader = new MnistDataLoader();
     std::vector<Image*> trainData = dataLoader->readMnistData("/home/felix/MNIST/train-images-idx3-ubyte", "/home/felix/MNIST/train-labels-idx1-ubyte");
-    cout << " done" << endl;
     std::vector<Image*> validationData;
+    arma::vec validationIdxs(10000, arma::fill::randu);
+    validationIdxs *= (trainData.size() - 10001);
+    for(size_t i=0; i<10000; ++i){
+        validationData.push_back(trainData.at((int)validationIdxs[i]));
+        trainData.erase(trainData.begin() + (int)validationIdxs[i]);
+    }
+    cout << " done" << endl;
+
     cout << "Loading Test Image Data..." << std::flush;
     std::vector<Image*> testData = dataLoader->readMnistData("/home/felix/MNIST/t10k-images-idx3-ubyte", "/home/felix/MNIST/t10k-labels-idx1-ubyte");
     cout << " done" << endl;
@@ -36,19 +45,28 @@ int main()
     //network->add(new ConvolutionalLayer(10, 5, 1));
     //network->add(new MaxPoolLayer(2, 2));
     //network->add(new ReluLayer());
-    network->add(new FullyConnectedLayer(1000));
-    network->add(new ReluLayer());
-    network->add(new FullyConnectedLayer(10));
-    network->add(new ReluLayer());
-    network->add(new SoftmaxLayer(10));
+    //network->add(new FullyConnectedLayer(new SigmoidActivation(), 784));
+    //network->add(new FullyConnectedLayer(new SigmoidActivation(), 1000));
+    //network->add(new FullyConnectedLayer(new SigmoidActivation(), 784));
+    network->add(new FullyConnectedLayer(new SigmoidActivation(), 30));
+    //network->add(new ReluLayer());
+    network->add(new FullyConnectedLayer(new SigmoidActivation(), 10));
+    //network->add(new ReluLayer());
+    network->add(new SoftmaxLayer(new QuadraticCost(), 10));
 
     network->init();
 
 
-    do {
-        network->trainEpoch();
-    }while (network->testEpoch() > 10.0);
+    double correctPercentage = 0.0;
 
+    do {
+        network->train(1);
+        //break;
+        correctPercentage = network->testEpoch();
+        std::cout << "Score: " << correctPercentage << std::endl;
+        //break;
+    }while (correctPercentage < 90.0);
+//
 
     delete network;
 

@@ -15,7 +15,7 @@ public:
 
     void init() override;
     arma::cube& feedForward(arma::cube& input) override;
-    void backprop(arma::vec& upstreamGradient) override;
+    void backprop(arma::vec* upstreamGradient) override;
     void init_for_testing(size_t inputHeight, size_t inputWidth, size_t inputDepth);
 };
 

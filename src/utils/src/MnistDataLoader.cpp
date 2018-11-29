@@ -57,7 +57,9 @@ std::vector<Image*> MnistDataLoader::readMnistData(string pathToImageFile, strin
             labelFile.read((char*)&temp,sizeof(temp));
             string label = std::to_string(temp);
 
+            data.at(i)->setClassIndex(temp);
             data.at(i)->setLabel(label);
+            data.at(i)->setNumClasses(10);
         }
         labelFile.close();
     }

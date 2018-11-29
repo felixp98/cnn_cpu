@@ -29,7 +29,7 @@ public:
     void setTestData(std::vector<Image*> *testData);
 
     void init();
-    void trainEpoch();
+    void train(size_t epochs);
     double testEpoch();
 
     double getError() const;

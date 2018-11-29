@@ -8,14 +8,22 @@
 #include <iostream>
 #include <armadillo>
 
+typedef enum {
+    INPUT_LAYER, CONV_LAYER, POOLING_LAYER, FULLY_CONNECTED_LAYER, SOFTMAX
+} LAYER_TYPE;
+
 class Layer{
 private:
+    LAYER_TYPE type;
+
     Layer* beforeLayer = nullptr;
     Layer* afterLayer = nullptr;
 
 protected:
     arma::cube input;
     arma::cube output;
+
+    arma::vec upstreamGradient;
 
     size_t inputHeight;
     size_t inputWidth;
@@ -28,7 +36,7 @@ protected:
 public:
     virtual void init() = 0;
     virtual arma::cube& feedForward(arma::cube& input) = 0;
-    virtual void backprop(arma::vec& upstreamGradient) = 0;
+    virtual void backprop(arma::vec* upstreamGradient) = 0;
 
     arma::cube &getInput() {
         return input;
@@ -109,6 +117,20 @@ public:
     void setInputDepth(size_t inputDepth) {
         Layer::inputDepth = inputDepth;
     }
+
+    LAYER_TYPE getType() const {
+        return type;
+    }
+
+    void setType(LAYER_TYPE type) {
+        Layer::type = type;
+    }
+
+     arma::vec &getUpstreamGradient() {
+        return upstreamGradient;
+    }
+
+
 };
 
 

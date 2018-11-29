@@ -10,6 +10,8 @@ ConvolutionalLayer::ConvolutionalLayer(size_t numFilters, size_t filterSize, siz
     this->numFilters = numFilters;
 	this->filterSize = filterSize;
 	this->stride = stride;
+
+    setType(CONV_LAYER);
 }
 
 void ConvolutionalLayer::init()
@@ -61,7 +63,7 @@ arma::cube& ConvolutionalLayer::feedForward(arma::cube& input)
     return output;
 }
 
-void ConvolutionalLayer::backprop(arma::vec& upstreamGradient)
+void ConvolutionalLayer::backprop(arma::vec* upstreamGradient)
 {
 	std::cout << "backprop conv" << std::endl;
 }

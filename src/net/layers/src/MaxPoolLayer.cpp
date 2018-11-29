@@ -4,6 +4,8 @@ MaxPoolLayer::MaxPoolLayer(size_t poolingSize, size_t stride){
     std::cout << "new MaxPoolLayer" << std::endl;
     this->poolingSize = poolingSize;
     this->stride = stride;
+
+    setType(POOLING_LAYER);
 }
 
 void MaxPoolLayer::init()
@@ -43,7 +45,7 @@ arma::cube& MaxPoolLayer::feedForward(arma::cube& input)
     return output;
 }
 
-void MaxPoolLayer::backprop(arma::vec& upstreamGradient)
+void MaxPoolLayer::backprop(arma::vec* upstreamGradient)
 {
     std::cout << "backprop maxpool" << std::endl;
 }

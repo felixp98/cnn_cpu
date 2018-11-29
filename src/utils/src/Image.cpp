@@ -35,3 +35,26 @@ void Image::setImageData(arma::cube &imageData) {
     Image::imageData = imageData;
 }
 
+int Image::getClassIndex() {
+    return classIndex;
+}
+
+void Image::setClassIndex(int classIndex) {
+    Image::classIndex = classIndex;
+}
+
+arma::vec &Image::getExpectedScore() {
+    expectedScore = arma::zeros(numClasses);
+    expectedScore(classIndex) = 1.0;
+
+    return expectedScore;
+}
+
+int Image::getNumClasses() {
+    return numClasses;
+}
+
+void Image::setNumClasses(int numClasses) {
+    Image::numClasses = numClasses;
+}
+
