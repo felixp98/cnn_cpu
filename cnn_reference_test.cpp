@@ -43,12 +43,10 @@ int main()
     //network->add(new ConvolutionalLayer(16, 5, 1));
     //network->add(new ReluLayer());
     //network->add(new MaxPoolingLayer(2, 2));
-    network->add(new FullyConnectedLayer(100));
-    //network->add(new SigmoidLayer());
-    //network->add(new ReluLayer());
+    network->add(new FullyConnectedLayer(30));
+    network->add(new SigmoidLayer());
     network->add(new FullyConnectedLayer(10));
-    //network->add(new SigmoidLayer());
-    //network->add(new ReluLayer());
+    network->add(new SigmoidLayer());
     network->add(new SoftmaxLayer(10));
     network->add(new CrossEntropyLossLayer(10));
 
