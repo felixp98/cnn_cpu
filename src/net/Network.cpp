@@ -1,159 +1,157 @@
 //
-// Created by felix on 28.10.18.
+// Created by felix on 01.12.18.
 //
 
-#include <utils/inc/Image.h>
-#include <net/layers/inc/SoftmaxLayer.h>
-#include <net/layers/inc/FullyConnectedLayer.h>
 #include "Network.h"
+#include "layers/InputLayer.h"
+#include "layers/CrossEntropyLossLayer.h"
+#include "layers/FullyConnectedLayer.h"
+#include "layers/ConvolutionalLayer.h"
 
+Network::Network(double learningRate, size_t batchSize) {
+    auto* inputLayer = new InputLayer();
 
-void Network::add(Layer* layer) {
-    if(initialized) std::cout << "Error: Add layers before initializing the network!" << std::endl;
-    layers.push_back(layer);
-    //layer->setNetwork(this);
+    this->LEARNING_RATE = learningRate;
+    this->BATCH_SIZE = batchSize;
 
-    if(layers.size() > 1){
-        Layer* beforeLayer = *std::next(layers.begin(), layers.size() - 2);
-        layer->setBeforeLayer(beforeLayer);
-        beforeLayer->setAfterLayer(layer);
-    }else{
-        layer->setBeforeLayer(nullptr);
-        layer->setInputHeight(trainData.at(0)->getImageData().n_rows);
-        layer->setInputWidth(trainData.at(0)->getImageData().n_cols);
-        layer->setInputDepth(trainData.at(0)->getImageData().n_slices);
-    }
-    layer->setAfterLayer(nullptr);
+    layers.push_back(inputLayer);
+    inputLayer->setBeforeLayer(nullptr);
 }
 
-void Network::setTrainData(std::vector<Image*> *trainData) {
-    this->trainData = *trainData;
-}
+void Network::add(Layer *newLayer) {
+    if (initialized) std::cout << "Error: Add layers before initializing the network!" << std::endl;
 
-void Network::setValidationData(std::vector<Image*> *validationData) {
-    this->validationData = *validationData;
-}
+    layers.push_back(newLayer);
 
-void Network::setTestData(std::vector<Image*> *testData) {
-    this->testData = *testData;
+    Layer *beforeLayer = layers.at(layers.size() - 2);
+    beforeLayer->setAfterLayer(newLayer);
+
+    newLayer->setBeforeLayer(beforeLayer);
+    newLayer->setAfterLayer(nullptr);
 }
 
 void Network::init() {
     initialized = true;
 
-    for(auto& layer : layers){
+    TRAIN_DATA_SIZE = trainData.size();
+    VALIDATION_DATA_SIZE = validationData.size();
+    TEST_DATA_SIZE = testData.size();
+    NUM_BATCHES = TRAIN_DATA_SIZE / BATCH_SIZE;
+
+    layers.at(0)->setInputHeight(trainData.at(0)->getImageData().n_rows);
+    layers.at(0)->setInputWidth(trainData.at(0)->getImageData().n_cols);
+    layers.at(0)->setInputDepth(trainData.at(0)->getImageData().n_slices);
+
+    for (auto &layer : layers) {
         layer->init();
-        if(layer->getAfterLayer() == nullptr){
-            ((SoftmaxLayer*)layer)->setTrainData(&(this->trainData));
-        }
     }
+    epochIdx = 0;
 
-    std::cout << "Network initialized" << std::endl;
+    std::cout << "\nNetwork initialized" << std::endl;
 }
 
-void Network::train(size_t numEpochs) {
-    double cost_sum_minibatch = 0.0;
+void Network::trainEpoch() {
+    std::cout << "\nEpoch Nr." << ++epochIdx << std::endl;
 
-    const size_t TRAIN_DATA_SIZE = trainData.size();
-    const size_t VALIDATION_DATA_SIZE = validationData.size();
-    const size_t TEST_DATA_SIZE = testData.size();
-    const double LEARNING_RATE = 0.05;
-    const size_t EPOCHS = numEpochs;
-    const size_t BATCH_SIZE = 10;
-    const size_t NUM_BATCHES = TRAIN_DATA_SIZE / BATCH_SIZE;
+    double sumLoss = 0.0;
 
+    for (size_t batchIdx = 0; batchIdx < NUM_BATCHES; batchIdx++) {
+        std::cout << "[" << batchIdx*BATCH_SIZE << "|" << trainData.size() << "]\r" << std::flush;
 
-    for (size_t epoch = 0; epoch < EPOCHS; epoch++) {
-        for (size_t batchIndex = 0; batchIndex < NUM_BATCHES; batchIndex++) {
+        // Generate a random batch.
+        arma::vec batch(BATCH_SIZE, arma::fill::randu);
+        batch *= (TRAIN_DATA_SIZE - 1);
 
-            // Generate a random batch.
-            arma::vec batch(BATCH_SIZE, arma::fill::randu);
-            batch *= (TRAIN_DATA_SIZE - 1);
-
-            for (size_t i = 0; i < BATCH_SIZE; i++) {
-                for (auto &layer : layers) {
-                    if (layer->getBeforeLayer() == nullptr) {
-                        layer->feedForward(trainData.at(batch[i])->getImageData());
-                    } else {
-                        layer->feedForward(layer->getBeforeLayer()->getOutput());
-                    }
-                }
-                for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-                    Layer *&currentLayer = *it;
-
-                    if (currentLayer->getAfterLayer() == nullptr && currentLayer->getType() == SOFTMAX) {
-                        auto *softmaxLayer = (SoftmaxLayer *) currentLayer;
-                        softmaxLayer->setImageIndex(batch[i]);
-                        softmaxLayer->backprop(nullptr);
-                        cost_sum_minibatch += softmaxLayer->getCost();
-                    } else {
-                        currentLayer->backprop(&(currentLayer->getAfterLayer()->getUpstreamGradient()));
-                    }
-                }
-                //break; //Todo: remove on target
-            }
-            //break;
-            std::cout << cost_sum_minibatch << std::endl;
-            cost_sum_minibatch = 0.0;
-            for (auto &layer : layers) {
-                if (layer->getType() == FULLY_CONNECTED_LAYER) {
-                    ((FullyConnectedLayer *) layer)->updateWeightsAndBiases(BATCH_SIZE, LEARNING_RATE);
-                }else if(layer->getType() == SOFTMAX){
-                    ((SoftmaxLayer *) layer)->updateWeightsAndBiases(BATCH_SIZE, LEARNING_RATE);
+        for (size_t i = 0; i < BATCH_SIZE; i++) {
+            //FeedForward
+            layers.at(0)->setInput(trainData[batch[i]]->getImageData());
+            for(size_t layerIdx = 0; layerIdx < layers.size(); ++layerIdx){
+                if(layerIdx == layers.size()-1) {layers.at(layerIdx)->setExpectedOutput(trainData[batch[i]]->getExpectedScore());}
+                layers.at(layerIdx)->feedForward();
+                if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == CROSS_ENTROPY_COST_LAYER) {
+                    sumLoss += ((CrossEntropyLossLayer*)layers.at(layerIdx))->getLoss();
                 }
             }
-            //break; //Todo: remove on target
+
+            //Backpropagation
+            for(size_t layerIdx = layers.size()-1; layerIdx > 0; --layerIdx){
+                layers.at(layerIdx)->backPropagate();
+            }
         }
-    }
-}
 
-double Network::testEpoch() {
-    int correctClassCounter = 0;
-
-    for(size_t imgIndex = 0; imgIndex < testData.size(); imgIndex++) {
-        for (auto &layer : layers) {
-            if (layer->getBeforeLayer() == nullptr) {
-                layer->feedForward(testData.at(imgIndex)->getImageData());
-            } else {
-                layer->feedForward(layer->getBeforeLayer()->getOutput());
-            }
-
-            if(layer->getAfterLayer() == nullptr){
-                int classIndex = ((SoftmaxLayer*)layer)->getClassOfHighestScore();
-                if(classIndex == testData.at(imgIndex)->getClassIndex()){
-                    correctClassCounter++;
-                }
+        //Update Weights and Biases
+        for(size_t layerIdx = 0; layerIdx < layers.size(); ++layerIdx){
+            if(layers.at(layerIdx)->getType() == FULLY_CONNECTED_LAYER){
+                auto* fcLayer = (FullyConnectedLayer*)layers.at(layerIdx);
+                fcLayer->UpdateWeightsAndBiases(BATCH_SIZE, LEARNING_RATE);
+            }else if(layers.at(layerIdx)->getType() == CONV_LAYER){
+                auto* convLayer = (ConvolutionalLayer*)layers.at(layerIdx);
+                convLayer->UpdateFilterWeights(BATCH_SIZE, LEARNING_RATE);
             }
         }
     }
 
-    return (double)correctClassCounter/testData.size();
+    std::cout << "Average loss: " << sumLoss / (BATCH_SIZE * NUM_BATCHES) << std::endl;
+
+    double correctImages = 0.0;
+    /*
+    //Compute training accuracy
+    for (size_t i = 0; i < TRAIN_DATA_SIZE; i++)
+    {
+        int predictedIndex = 0;
+
+        //FeedForward
+        layers.at(0)->setInput(trainData[i]->getImageData());
+        for(size_t layerIdx = 0; layerIdx < layers.size(); ++layerIdx){
+            if(layerIdx == layers.size()-1) {layers.at(layerIdx)->setExpectedOutput(trainData[i]->getExpectedScore());}
+            layers.at(layerIdx)->feedForward();
+            if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == CROSS_ENTROPY_COST_LAYER) {
+                predictedIndex = ((CrossEntropyLossLayer*)layers.at(layerIdx))->getMaxIndex();
+            }
+        }
+
+        if(trainData[i]->getExpectedScore().index_max() == predictedIndex){
+            correctImages++;
+        }
+    }
+    std::cout << "Training accuracy: " << correctImages/TRAIN_DATA_SIZE << std::endl;
+*/
+
+    //Compute validation accuracy
+    correctImages = 0;
+    for (size_t i = 0; i < VALIDATION_DATA_SIZE; i++)
+    {
+        int predictedIndex = 0;
+
+        //FeedForward
+        layers.at(0)->setInput(validationData[i]->getImageData());
+        for(size_t layerIdx = 0; layerIdx < layers.size(); ++layerIdx){
+            if(layerIdx == layers.size()-1) {layers.at(layerIdx)->setExpectedOutput(validationData[i]->getExpectedScore());}
+            layers.at(layerIdx)->feedForward();
+            if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == CROSS_ENTROPY_COST_LAYER) {
+                predictedIndex = ((CrossEntropyLossLayer*)layers.at(layerIdx))->getMaxIndex();
+            }
+        }
+
+        if(validationData[i]->getExpectedScore().index_max() == predictedIndex){
+            correctImages++;
+        }
+    }
+    std::cout << "Validation accuracy: " << correctImages/VALIDATION_DATA_SIZE << std::endl;
 }
 
-double Network::getError() const {
-    return error;
+void Network::testEpoch() {
+    //Todo: test trained network on unknown test-dataset
 }
 
-size_t Network::getRawInputHeight() const {
-    return rawInputHeight;
+void Network::setTrainData(std::vector<Image*> &trainData) {
+    Network::trainData = trainData;
 }
 
-void Network::setRawInputHeight(size_t rawInputHeight) {
-    Network::rawInputHeight = rawInputHeight;
+void Network::setValidationData(std::vector<Image*> &validationData) {
+    Network::validationData = validationData;
 }
 
-size_t Network::getRawInputWidth() const {
-    return rawInputWidth;
-}
-
-void Network::setRawInputWidth(size_t rawInputWidth) {
-    Network::rawInputWidth = rawInputWidth;
-}
-
-size_t Network::getRawInputDepth() const {
-    return rawInputDepth;
-}
-
-void Network::setRawInputDepth(size_t rawInputDepth) {
-    Network::rawInputDepth = rawInputDepth;
+void Network::setTestData(std::vector<Image*> &testData) {
+    Network::testData = testData;
 }

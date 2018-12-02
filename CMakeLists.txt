@@ -6,15 +6,15 @@ set(CMAKE_CXX_STANDARD 11)
 #find_package(Armadillo 6.5 REQUIRED)
 #include_directories(${ARMADILLO_INCLUDE_DIRS})
 
-set(SOURCE_FILES cnn_reference_test.cpp)
-add_executable(${CMAKE_PROJECT_NAME}_run ${SOURCE_FILES})
+#set(SOURCE_FILES cnn_reference_test.cpp cnn_cpu_reference_LeNet.cpp)
+add_executable(cnn_reference_test cnn_reference_test.cpp)
 
 include_directories(src)
 
 add_subdirectory(src)
 add_subdirectory(tests)
 
-target_link_libraries(${CMAKE_PROJECT_NAME}_run ${CMAKE_PROJECT_NAME}_lib)
+target_link_libraries(cnn_reference_test ${CMAKE_PROJECT_NAME}_lib)
 
 #ADD_SUBDIRECTORY(tests/lib/gtest-1.8)
 #enable_testing()

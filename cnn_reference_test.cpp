@@ -1,74 +1,62 @@
 ﻿#include <net/Network.h>
-#include <utils/inc/MnistDataLoader.h>
+#include <utils/MnistDataLoader.h>
 #include <net/activation/inc/SigmoidActivation.h>
 #include <net/cost/inc/QuadraticCost.h>
-#include "net/layers/inc/ConvolutionalLayer.h"
-#include "net/layers/inc/FullyConnectedLayer.h"
-#include "net/layers/inc/SoftmaxLayer.h"
-#include "net/layers/inc/MaxPoolLayer.h"
-#include "net/layers/inc/ReluLayer.h"
+#include <net/activation/inc/ReluActivation.h>
+#include <net/layers/CrossEntropyLossLayer.h>
+#include <net/layers/ReluLayer.h>
+#include <net/layers/SigmoidLayer.h>
+#include "net/layers/ConvolutionalLayer.h"
+#include "net/layers/FullyConnectedLayer.h"
+#include "net/layers/SoftmaxLayer.h"
+#include "net/layers/MaxPoolingLayer.h"
 
 using std::cout;
 
 int main()
 {
-	cout << "CNN Reference Test CPU:" << endl;
+	cout << "-- CNN Reference Test on CPU --\n" << endl;
+    cout << "Loading Image Data..." << flush;
 
-    cout << "Loading Training Image Data..." << std::flush;
-    auto * dataLoader = new MnistDataLoader();
-    std::vector<Image*> trainData = dataLoader->readMnistData("/home/felix/MNIST/train-images-idx3-ubyte", "/home/felix/MNIST/train-labels-idx1-ubyte");
-    std::vector<Image*> validationData;
-    arma::vec validationIdxs(10000, arma::fill::randu);
-    validationIdxs *= (trainData.size() - 10001);
-    for(size_t i=0; i<10000; ++i){
-        validationData.push_back(trainData.at((int)validationIdxs[i]));
-        trainData.erase(trainData.begin() + (int)validationIdxs[i]);
-    }
-    cout << " done" << endl;
+    MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_gpu/data");
 
-    cout << "Loading Test Image Data..." << std::flush;
-    std::vector<Image*> testData = dataLoader->readMnistData("/home/felix/MNIST/t10k-images-idx3-ubyte", "/home/felix/MNIST/t10k-labels-idx1-ubyte");
-    cout << " done" << endl;
+    cout << "done\n" << endl;
 
-    //cout << "Label: " << trainData.at(0)->getLabel() << endl;
-    //trainData.at(0)->getImageData().print();
-    //cout << "Label: " << testData.at(0)->getLabel() << endl;
-    //testData.at(0)->getImageData().print();
+    std::vector<Image*> trainData = mdLoader.getTrainData();
+    std::vector<Image*> validationData = mdLoader.getValidationData();
+    std::vector<Image*> testData = mdLoader.getTestData();
 
-    //create Network structure
-    auto * network = new Network();
+    cout << "[NETWORK CONFIGURATION]" << endl;
+    cout << "Training data size: " << trainData.size() << endl;
+    cout << "Validation data size: " << validationData.size() << endl;
+    cout << "Test data size: " << testData.size() << "\n" << endl;
 
-    network->setTrainData(&trainData);
-    network->setValidationData(&validationData);
-    network->setTestData(&testData);
 
-    //network->add(new ConvolutionalLayer(10, 5, 1));
-    //network->add(new MaxPoolLayer(2, 2));
+    auto *network = new Network(0.05, 100);
+    network->setTrainData(trainData);
+    network->setValidationData(validationData);
+    network->setTestData(testData);
+
+    //network->add(new ConvolutionalLayer(6, 5, 1));
     //network->add(new ReluLayer());
-    //network->add(new FullyConnectedLayer(new SigmoidActivation(), 784));
-    //network->add(new FullyConnectedLayer(new SigmoidActivation(), 1000));
-    //network->add(new FullyConnectedLayer(new SigmoidActivation(), 784));
-    network->add(new FullyConnectedLayer(new SigmoidActivation(), 30));
+    //network->add(new MaxPoolingLayer(2, 2));
+    //network->add(new ConvolutionalLayer(16, 5, 1));
     //network->add(new ReluLayer());
-    network->add(new FullyConnectedLayer(new SigmoidActivation(), 10));
+    //network->add(new MaxPoolingLayer(2, 2));
+    network->add(new FullyConnectedLayer(100));
+    //network->add(new SigmoidLayer());
     //network->add(new ReluLayer());
-    network->add(new SoftmaxLayer(new QuadraticCost(), 10));
+    network->add(new FullyConnectedLayer(10));
+    //network->add(new SigmoidLayer());
+    //network->add(new ReluLayer());
+    network->add(new SoftmaxLayer(10));
+    network->add(new CrossEntropyLossLayer(10));
 
     network->init();
 
-
-    double correctPercentage = 0.0;
-
-    do {
-        network->train(1);
-        //break;
-        correctPercentage = network->testEpoch();
-        std::cout << "Score: " << correctPercentage << std::endl;
-        //break;
-    }while (correctPercentage < 90.0);
-//
+    network->trainEpoch();
+    network->trainEpoch();
+    network->trainEpoch();
 
     delete network;
-
-	return 0;
 }

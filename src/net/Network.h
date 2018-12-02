@@ -1,51 +1,51 @@
 //
-// Created by felix on 28.10.18.
+// Created by felix on 01.12.18.
 //
 
-#ifndef CNN_GPU_NETWORK_H
-#define CNN_GPU_NETWORK_H
+#ifndef CPP_CNN_NETWORK_H
+#define CPP_CNN_NETWORK_H
 
-#include <list>
-#include <net/layers/inc/Layer.h>
-#include "utils/inc/Image.h"
+#include "layers/Layer.h"
+#include <iostream>
+#include <armadillo>
+#include <utils/Image.h>
 
-class Network{
+class Network {
 private:
-    std::list<Layer*> layers;
+    std::vector<Layer *> layers;
+
     std::vector<Image*> trainData;
     std::vector<Image*> validationData;
     std::vector<Image*> testData;
 
     bool initialized = false;
-    double error;
-    size_t rawInputHeight;
-    size_t rawInputWidth;
-    size_t rawInputDepth;
+
+    size_t TRAIN_DATA_SIZE;
+    size_t VALIDATION_DATA_SIZE;
+    size_t TEST_DATA_SIZE;
+    double LEARNING_RATE = 0.05;
+    size_t BATCH_SIZE = 10;
+    size_t NUM_BATCHES;
+
+    size_t epochIdx = 0;
 
 public:
-    void add(Layer* layer);
-    void setTrainData(std::vector<Image*> *trainData);
-    void setValidationData(std::vector<Image*> *validationData);
-    void setTestData(std::vector<Image*> *testData);
+    Network(double learningRate, size_t batchSize);
+
+    void add(Layer *layer);
+
+    void setTrainData(std::vector<Image*> &trainData);
+
+    void setValidationData(std::vector<Image*> &validationData);
+
+    void setTestData(std::vector<Image*> &testData);
 
     void init();
-    void train(size_t epochs);
-    double testEpoch();
 
-    double getError() const;
+    void trainEpoch();
 
-    size_t getRawInputHeight() const;
-
-    void setRawInputHeight(size_t rawInputHeight);
-
-    size_t getRawInputWidth() const;
-
-    void setRawInputWidth(size_t rawInputWidth);
-
-    size_t getRawInputDepth() const;
-
-    void setRawInputDepth(size_t rawInputDepth);
-
+    void testEpoch();
 };
 
-#endif //CNN_GPU_NETWORK_H
+
+#endif //CPP_CNN_NETWORK_H

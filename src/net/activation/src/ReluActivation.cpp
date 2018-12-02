@@ -16,8 +16,9 @@ arma::vec ReluActivation::forwardActivation(arma::vec& value) {
 }
 
 arma::vec ReluActivation::derivativeActivation(arma::vec& value) {
-    //TODO not implemented yet
-    return arma::zeros(value.size());
+    arma::vec temp = value;
+    temp.transform( [](double val) { return val > 0? 1 : 0; } );
+    return temp;
 }
 
 double ReluActivation::reluActivation(double v){
