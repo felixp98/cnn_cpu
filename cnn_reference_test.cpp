@@ -1,8 +1,6 @@
 ﻿#include <net/Network.h>
 #include <utils/MnistDataLoader.h>
-#include <net/activation/inc/SigmoidActivation.h>
 #include <net/cost/inc/QuadraticCost.h>
-#include <net/activation/inc/ReluActivation.h>
 #include <net/layers/CrossEntropyLossLayer.h>
 #include <net/layers/ReluLayer.h>
 #include <net/layers/SigmoidLayer.h>
@@ -18,7 +16,7 @@ int main()
 	cout << "-- CNN Reference Test on CPU --\n" << endl;
     cout << "Loading Image Data..." << flush;
 
-    MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_gpu/data");
+    MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_cpu/data");
 
     cout << "done\n" << endl;
 
