@@ -29,6 +29,8 @@ private:
 
     size_t epochIdx = 0;
 
+    double error = 0.0;
+
 public:
     Network(double learningRate, size_t batchSize);
 
@@ -45,6 +47,8 @@ public:
     void trainEpoch();
 
     void testEpoch();
+
+    double getError() const;
 };
 
 

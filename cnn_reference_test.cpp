@@ -16,7 +16,7 @@ int main()
 	cout << "-- CNN Reference Test on CPU --\n" << endl;
     cout << "Loading Image Data..." << flush;
 
-    MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_cpu/data");
+    MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_cpu/data", 0.9);
 
     cout << "done\n" << endl;
 
@@ -30,18 +30,20 @@ int main()
     cout << "Test data size: " << testData.size() << "\n" << endl;
 
 
-    auto *network = new Network(0.05, 100);
+    auto *network = new Network(0.05, 10);
     network->setTrainData(trainData);
     network->setValidationData(validationData);
     network->setTestData(testData);
 
-    //network->add(new ConvolutionalLayer(6, 5, 1));
-    //network->add(new ReluLayer());
-    //network->add(new MaxPoolingLayer(2, 2));
-    //network->add(new ConvolutionalLayer(16, 5, 1));
-    //network->add(new ReluLayer());
-    //network->add(new MaxPoolingLayer(2, 2));
-    network->add(new FullyConnectedLayer(30));
+    network->add(new ConvolutionalLayer(6, 5, 1));
+    network->add(new ReluLayer());
+    network->add(new MaxPoolingLayer(2, 2));
+    network->add(new ConvolutionalLayer(16, 5, 1));
+    network->add(new ReluLayer());
+    network->add(new MaxPoolingLayer(2, 2));
+    network->add(new FullyConnectedLayer(120));
+    network->add(new SigmoidLayer());
+    network->add(new FullyConnectedLayer(70));
     network->add(new SigmoidLayer());
     network->add(new FullyConnectedLayer(10));
     network->add(new SigmoidLayer());
@@ -50,9 +52,10 @@ int main()
 
     network->init();
 
-    network->trainEpoch();
-    network->trainEpoch();
-    network->trainEpoch();
+    do{
+        network->trainEpoch();
+        network->testEpoch();
+    }while(network->getError() > 0.15);
 
     delete network;
 }

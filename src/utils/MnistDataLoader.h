@@ -30,7 +30,7 @@ private:
     void splitTrainDataToValidationData(double splitRatio, vector<Image*> &trainData, vector<Image*> &validationData);
 
 public:
-    explicit MnistDataLoader(string relativePathToData);
+    explicit MnistDataLoader(string relativePathToData, double splitRatio);
 
     const vector<Image *> &getTrainData() const;
 

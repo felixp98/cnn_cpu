@@ -6,7 +6,7 @@
 #include "MnistDataLoader.h"
 
 
-MnistDataLoader::MnistDataLoader(string pathToData) {
+MnistDataLoader::MnistDataLoader(string pathToData, double splitRatio) {
 
     this->pathToData = pathToData;
     pathToTrainData = pathToData + "/train-images-idx3-ubyte";
@@ -17,7 +17,7 @@ MnistDataLoader::MnistDataLoader(string pathToData) {
     trainData = readMnistData(pathToTrainData, pathToTrainLabels);
     testData = readMnistData(pathToTestData, pathToTestLabels);
 
-    splitTrainDataToValidationData(0.9, trainData, validationData);
+    splitTrainDataToValidationData(splitRatio, trainData, validationData);
 }
 
 std::vector<Image*> MnistDataLoader::readMnistData(string pathToImageFile, string pathToLabelFile){

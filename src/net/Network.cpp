@@ -118,7 +118,7 @@ void Network::trainEpoch() {
 */
 
     //Compute validation accuracy
-    correctImages = 0;
+    correctImages = 0.0;
     for (size_t i = 0; i < VALIDATION_DATA_SIZE; i++)
     {
         int predictedIndex = 0;
@@ -141,7 +141,28 @@ void Network::trainEpoch() {
 }
 
 void Network::testEpoch() {
-    //Todo: test trained network on unknown test-dataset
+    //Compute test accuracy
+    double correctImages = 0.0;
+    for (size_t i = 0; i < TEST_DATA_SIZE; i++)
+    {
+        int predictedIndex = 0;
+
+        //FeedForward
+        layers.at(0)->setInput(testData[i]->getImageData());
+        for(size_t layerIdx = 0; layerIdx < layers.size(); ++layerIdx){
+            if(layerIdx == layers.size()-1) {layers.at(layerIdx)->setExpectedOutput(testData[i]->getExpectedScore());}
+            layers.at(layerIdx)->feedForward();
+            if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == CROSS_ENTROPY_COST_LAYER) {
+                predictedIndex = ((CrossEntropyLossLayer*)layers.at(layerIdx))->getMaxIndex();
+            }
+        }
+
+        if(testData[i]->getExpectedScore().index_max() == predictedIndex){
+            correctImages++;
+        }
+    }
+    std::cout << "Test accuracy: " << correctImages/TEST_DATA_SIZE << std::endl;
+    error = 1-correctImages/TEST_DATA_SIZE;
 }
 
 void Network::setTrainData(std::vector<Image*> &trainData) {
@@ -154,4 +175,8 @@ void Network::setValidationData(std::vector<Image*> &validationData) {
 
 void Network::setTestData(std::vector<Image*> &testData) {
     Network::testData = testData;
+}
+
+double Network::getError() const {
+    return error;
 }
