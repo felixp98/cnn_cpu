@@ -4,7 +4,7 @@ Reference-Implementation of a Convolutional Neural Network using C++ without par
 Used libraries: Armadillo, Google Test
 
 
-###Usage:
+### Usage:
 
 **1.** Clone repository  `git clone https://github.com/felixp98/cnn_cpu.git`<br>
 **2.** Install Armadillo version 8.4 or higher (see below).<br>
@@ -16,7 +16,7 @@ Used libraries: Armadillo, Google Test
 <br>
 <br>
 
-####Armadillo Installation:
+#### Armadillo Installation:
 1. Install Armadillo prerequisities: `sudo apt install cmake libopenblas-dev liblapack-dev`
 2. Download newest Armadillo version: http://arma.sourceforge.net/download.html
 3. `cd arma*` into extracted directory
