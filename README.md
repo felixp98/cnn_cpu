@@ -19,7 +19,7 @@ Used libraries: Armadillo, Google Test
 #### Armadillo Installation:
 1. Install Armadillo prerequisities: `sudo apt install cmake libopenblas-dev liblapack-dev`
 2. Download newest Armadillo version: http://arma.sourceforge.net/download.html
-3. `cd arma*` into extracted directory
+3. cd into extracted directory `cd arma*`
 4. Generate build files: `cmake .`
 5. `make`
 6. `sudo make install`
