@@ -1,7 +1,3 @@
-//
-// Created by felix on 02.12.18.
-//
-
 #include "InputLayer.h"
 
 InputLayer::InputLayer() {

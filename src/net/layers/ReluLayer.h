@@ -1,7 +1,3 @@
-//
-// Created by felix on 02.12.18.
-//
-
 #ifndef CNN_GPU_RELULAYER_H
 #define CNN_GPU_RELULAYER_H
 

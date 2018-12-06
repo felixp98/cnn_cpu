@@ -1,7 +1,3 @@
-//
-// Created by felix on 01.12.18.
-//
-
 #include "Network.h"
 #include "layers/InputLayer.h"
 #include "layers/CrossEntropyLossLayer.h"
@@ -83,10 +79,10 @@ void Network::trainEpoch() {
         for(size_t layerIdx = 0; layerIdx < layers.size(); ++layerIdx){
             if(layers.at(layerIdx)->getType() == FULLY_CONNECTED_LAYER){
                 auto* fcLayer = (FullyConnectedLayer*)layers.at(layerIdx);
-                fcLayer->UpdateWeightsAndBiases(BATCH_SIZE, LEARNING_RATE);
+                fcLayer->updateWeightsAndBiases(BATCH_SIZE, LEARNING_RATE);
             }else if(layers.at(layerIdx)->getType() == CONV_LAYER){
                 auto* convLayer = (ConvolutionalLayer*)layers.at(layerIdx);
-                convLayer->UpdateFilterWeights(BATCH_SIZE, LEARNING_RATE);
+                convLayer->updateFilterWeights(BATCH_SIZE, LEARNING_RATE);
             }
         }
     }

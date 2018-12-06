@@ -1,7 +1,3 @@
-//
-// Created by felix on 02.12.18.
-//
-
 #include "CrossEntropyLossLayer.h"
 
 CrossEntropyLossLayer::CrossEntropyLossLayer(size_t numInputs)
@@ -18,18 +14,15 @@ void CrossEntropyLossLayer::init() {
 }
 
 void CrossEntropyLossLayer::feedForward() {
-    this->predictedDistribution = arma::vectorise(getBeforeLayer()->getOutput());
+    this->predictedOutput = arma::vectorise(getBeforeLayer()->getOutput());
 
-    // Compute the loss and cache that too.
-    //expectedOutput.print();
-    //predictedDistribution.print();
     this->loss = -arma::dot(expectedOutput,
-                            arma::log(predictedDistribution));
+                            arma::log(predictedOutput));
 }
 
 void CrossEntropyLossLayer::backPropagate() {
     arma::vec temp =
-            -(expectedOutput % (1 / predictedDistribution));
+            -(expectedOutput % (1 / predictedOutput));
     gradientInput.slice(0).col(0) = temp;
 }
 
@@ -38,6 +31,6 @@ double CrossEntropyLossLayer::getLoss() const {
 }
 
 int CrossEntropyLossLayer::getMaxIndex() {
-    return static_cast<int>(predictedDistribution.index_max());
+    return static_cast<int>(predictedOutput.index_max());
 }
 

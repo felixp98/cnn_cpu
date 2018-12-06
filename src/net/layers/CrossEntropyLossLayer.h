@@ -1,7 +1,3 @@
-//
-// Created by felix on 02.12.18.
-//
-
 #ifndef CNN_GPU_CROSSENTROPYLOSSLAYER_H
 #define CNN_GPU_CROSSENTROPYLOSSLAYER_H
 
@@ -13,7 +9,7 @@
 class CrossEntropyLossLayer : public Layer {
 private:
     size_t numInputs;
-    arma::vec predictedDistribution;
+    arma::vec predictedOutput;
 
     double loss;
 

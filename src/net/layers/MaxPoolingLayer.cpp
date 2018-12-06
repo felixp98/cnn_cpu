@@ -1,7 +1,3 @@
-//
-// Created by felix on 02.12.18.
-//
-
 #include "MaxPoolingLayer.h"
 
 MaxPoolingLayer::MaxPoolingLayer(size_t poolingSize, size_t stride)  :

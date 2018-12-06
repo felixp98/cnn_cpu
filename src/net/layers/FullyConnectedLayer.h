@@ -1,7 +1,3 @@
-//
-// Created by felix on 02.12.18.
-//
-
 #ifndef CNN_GPU_FULLYCONNECTEDLAYER_H
 #define CNN_GPU_FULLYCONNECTEDLAYER_H
 
@@ -18,14 +14,14 @@ private:
     arma::mat weights;
     arma::vec biases;
 
-    arma::mat gradWeights;
-    arma::vec gradBiases;
+    arma::mat nablaWeights;
+    arma::vec nablaBiases;
 
-    arma::mat accumulatedGradWeights;
-    arma::vec accumulatedGradBiases;
+    arma::mat accumulatedNablaWeights;
+    arma::vec accumulatedNablaBiases;
 
-    double _getTruncNormalVal(double mean, double variance);
-    void _resetAccumulatedGradients();
+    double getRandomWeight(double mean, double variance);
+    void resetAccumulatedNablas();
 
 public:
     explicit FullyConnectedLayer(size_t numOutputs);
@@ -36,7 +32,7 @@ public:
 
     void backPropagate() override;
 
-    void UpdateWeightsAndBiases(size_t batchSize, double learningRate);
+    void updateWeightsAndBiases(size_t batchSize, double learningRate);
 
     double getRandomValueBetweenBorders(int min, int max);
 };

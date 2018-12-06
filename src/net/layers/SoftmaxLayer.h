@@ -19,4 +19,4 @@ public:
     void backPropagate() override;
 };
 
-#endif //CNN_GPU_SOFTMAXLAYER_H
+#endif //CNN_CPU_SOFTMAXLAYER_H

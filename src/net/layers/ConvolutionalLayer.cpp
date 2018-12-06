@@ -25,10 +25,10 @@ void ConvolutionalLayer::init() {
     filters.resize(numFilters);
     for (size_t i = 0; i < numFilters; i++) {
         filters[i] = arma::zeros(filterSize, filterSize, inputDepth);
-        filters[i].imbue([&]() { return _getTruncNormalVal(0.0, 1.0); });
+        filters[i].imbue([&]() { return getRandomVal(0.0, 1.0); });
     }
 
-    _resetAccumulatedGradients();
+    resetAccumulatedNablas();
 }
 
 void ConvolutionalLayer::feedForward() {
@@ -76,10 +76,10 @@ void ConvolutionalLayer::backPropagate() {
     }
 
     // Initialize the gradient wrt filters.
-    gradFilters.clear();
-    gradFilters.resize(numFilters);
+    nablaFilters.clear();
+    nablaFilters.resize(numFilters);
     for (size_t i = 0; i < numFilters; i++)
-        gradFilters[i] = arma::zeros(filterSize, filterSize, inputDepth);
+        nablaFilters[i] = arma::zeros(filterSize, filterSize, inputDepth);
 
     // Compute the gradient wrt filters.
     for (size_t fidx = 0; fidx < numFilters; fidx++) {
@@ -92,17 +92,17 @@ void ConvolutionalLayer::backPropagate() {
                                     (r * stride) + filterSize - 1,
                                     (c * stride) + filterSize - 1,
                                     inputDepth - 1);
-                gradFilters[fidx] += upstreamGradient.slice(fidx)(r, c) * tmp;
+                nablaFilters[fidx] += upstreamGradient.slice(fidx)(r, c) * tmp;
             }
         }
     }
 
     // Update the accumulated gradient wrt filters.
     for (size_t fidx = 0; fidx < numFilters; fidx++)
-        accumulatedGradFilters[fidx] += gradFilters[fidx];
+        accumulatedNablaFilters[fidx] += nablaFilters[fidx];
 }
 
-double ConvolutionalLayer::_getTruncNormalVal(double mean, double variance) {
+double ConvolutionalLayer::getRandomVal(double mean, double variance) {
     double stddev = sqrt(variance);
     arma::mat candidate = {3.0 * stddev};
     while (std::abs(candidate[0] - mean) > 2.0 * stddev)
@@ -110,24 +110,22 @@ double ConvolutionalLayer::_getTruncNormalVal(double mean, double variance) {
     return candidate[0];
 }
 
-void ConvolutionalLayer::_resetAccumulatedGradients() {
-    accumulatedGradFilters.clear();
-    accumulatedGradFilters.resize(numFilters);
+void ConvolutionalLayer::resetAccumulatedNablas(){
+    accumulatedNablaFilters.clear();
+    accumulatedNablaFilters.resize(numFilters);
     for (size_t fidx = 0; fidx < numFilters; fidx++)
-        accumulatedGradFilters[fidx] = arma::zeros(filterSize,
-                                                   filterSize,
-                                                   inputDepth);
+        accumulatedNablaFilters[fidx] = arma::zeros(filterSize, filterSize, inputDepth);
 }
 
-std::vector<arma::cube> ConvolutionalLayer::getGradientWrtFilters() {
-    return gradFilters;
+std::vector<arma::cube> ConvolutionalLayer::getNablaFilters() {
+    return nablaFilters;
 }
 
-void ConvolutionalLayer::UpdateFilterWeights(size_t batchSize, double learningRate) {
+void ConvolutionalLayer::updateFilterWeights(size_t batchSize, double learningRate) {
     for (size_t fidx = 0; fidx < numFilters; fidx++)
-        filters[fidx] -= learningRate * (accumulatedGradFilters[fidx] / batchSize);
+        filters[fidx] -= learningRate * (accumulatedNablaFilters[fidx] / batchSize);
 
-    _resetAccumulatedGradients();
+    resetAccumulatedNablas();
 }
 
 void ConvolutionalLayer::setFilters(std::vector<arma::cube> filters) {

@@ -11,12 +11,12 @@ private:
 
     std::vector<arma::cube> filters;
 
-    double _getTruncNormalVal(double mean, double variance);
+    double getRandomVal(double mean, double variance);
 
-    void _resetAccumulatedGradients();
+    void resetAccumulatedNablas();
 
-    std::vector<arma::cube> gradFilters;
-    std::vector<arma::cube> accumulatedGradFilters;
+    std::vector<arma::cube> nablaFilters;
+    std::vector<arma::cube> accumulatedNablaFilters;
 
 public:
     ConvolutionalLayer(size_t numFilters, size_t filterSize, size_t stride);
@@ -27,13 +27,13 @@ public:
 
     void backPropagate() override;
 
-    void UpdateFilterWeights(size_t batchSize, double learningRate);
+    void updateFilterWeights(size_t batchSize, double learningRate);
 
     void setFilters(std::vector<arma::cube> filters);
 
     std::vector<arma::cube> getFilters();
 
-    std::vector<arma::cube> getGradientWrtFilters();
+    std::vector<arma::cube> getNablaFilters();
 };
 
 #endif //CNN_GPU_CONVOLUTIONALLAYER_H
