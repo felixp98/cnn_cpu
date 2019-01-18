@@ -1,5 +1,5 @@
 # cnn_cpu
-Reference-Implementation of a Convolutional Neural Network using C++ without parallelization.
+Reference-Implementation of a Convolutional Neural Network from scratch using C++ without parallelization.
 
 Used libraries: Armadillo, Google Test
 
