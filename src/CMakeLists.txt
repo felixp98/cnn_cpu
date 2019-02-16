@@ -13,6 +13,7 @@ set(HEADER_FILES
         net/cost/inc/CrossEntropyCost.h
         net/layers/ConvolutionalLayer.h
         net/layers/CrossEntropyLossLayer.h
+        net/layers/QuadraticLossLayer.h
         net/layers/FullyConnectedLayer.h
         net/layers/InputLayer.h
         net/layers/MaxPoolingLayer.h
@@ -28,6 +29,7 @@ set(SOURCE_FILES
         net/cost/src/CrossEntropyCost.cpp
         net/layers/ConvolutionalLayer.cpp
         net/layers/CrossEntropyLossLayer.cpp
+        net/layers/QuadraticLossLayer.cpp
         net/layers/FullyConnectedLayer.cpp
         net/layers/InputLayer.cpp
         net/layers/MaxPoolingLayer.cpp

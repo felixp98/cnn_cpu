@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(cnn_gpu)
+project(cnn_cpu)
 
 set(CMAKE_CXX_STANDARD 11)
 

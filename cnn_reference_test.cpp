@@ -4,6 +4,7 @@
 #include <net/layers/CrossEntropyLossLayer.h>
 #include <net/layers/ReluLayer.h>
 #include <net/layers/SigmoidLayer.h>
+#include <net/layers/QuadraticLossLayer.h>
 #include "net/layers/ConvolutionalLayer.h"
 #include "net/layers/FullyConnectedLayer.h"
 #include "net/layers/SoftmaxLayer.h"
@@ -35,20 +36,24 @@ int main()
     network->setValidationData(validationData);
     network->setTestData(testData);
 
-    //network->add(new ConvolutionalLayer(6, 5, 1));
-    //network->add(new ReluLayer());
+    network->add(new ConvolutionalLayer(64, 5, 1));
+    network->add(new ReluLayer());
     //network->add(new MaxPoolingLayer(2, 2));
-    //network->add(new ConvolutionalLayer(16, 5, 1));
+    //network->add(new ConvolutionalLayer(32, 5, 1));
     //network->add(new ReluLayer());
-    //network->add(new MaxPoolingLayer(2, 2));
-    //network->add(new FullyConnectedLayer(120));
+    network->add(new MaxPoolingLayer(2, 2));
+    network->add(new ConvolutionalLayer(16, 5, 1));
+    network->add(new ReluLayer());
+    network->add(new MaxPoolingLayer(2, 2));
+    //network->add(new FullyConnectedLayer(1200));
     //network->add(new SigmoidLayer());
-    network->add(new FullyConnectedLayer(70));
+    network->add(new FullyConnectedLayer(100));
     network->add(new SigmoidLayer());
     network->add(new FullyConnectedLayer(10));
     network->add(new SigmoidLayer());
     network->add(new SoftmaxLayer(10));
-    network->add(new CrossEntropyLossLayer(10));
+    //network->add(new CrossEntropyLossLayer(10));
+    network->add(new QuadraticLossLayer(10));
 
     network->init();
 

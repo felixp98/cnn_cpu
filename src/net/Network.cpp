@@ -3,6 +3,7 @@
 #include "layers/CrossEntropyLossLayer.h"
 #include "layers/FullyConnectedLayer.h"
 #include "layers/ConvolutionalLayer.h"
+#include "layers/QuadraticLossLayer.h"
 
 Network::Network(double learningRate, size_t batchSize) {
     auto* inputLayer = new InputLayer();
@@ -67,6 +68,9 @@ void Network::trainEpoch() {
                 if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == CROSS_ENTROPY_COST_LAYER) {
                     sumLoss += ((CrossEntropyLossLayer*)layers.at(layerIdx))->getLoss();
                 }
+                if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == QUADRATIC_LOSS_LAYER) {
+                    sumLoss += ((QuadraticLossLayer*)layers.at(layerIdx))->getLoss();
+                }
             }
 
             //Backpropagation
@@ -127,6 +131,9 @@ void Network::trainEpoch() {
             if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == CROSS_ENTROPY_COST_LAYER) {
                 predictedIndex = ((CrossEntropyLossLayer*)layers.at(layerIdx))->getMaxIndex();
             }
+            if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == QUADRATIC_LOSS_LAYER) {
+                predictedIndex = ((QuadraticLossLayer*)layers.at(layerIdx))->getMaxIndex();
+            }
         }
 
         if(validationData[i]->getExpectedScore().index_max() == predictedIndex){
@@ -150,6 +157,9 @@ void Network::testEpoch() {
             layers.at(layerIdx)->feedForward();
             if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == CROSS_ENTROPY_COST_LAYER) {
                 predictedIndex = ((CrossEntropyLossLayer*)layers.at(layerIdx))->getMaxIndex();
+            }
+            if(layerIdx == layers.size()-1 && layers.at(layerIdx)->getType() == QUADRATIC_LOSS_LAYER) {
+                predictedIndex = ((QuadraticLossLayer*)layers.at(layerIdx))->getMaxIndex();
             }
         }
 
