@@ -9,12 +9,21 @@
 #include "net/layers/FullyConnectedLayer.h"
 #include "net/layers/SoftmaxLayer.h"
 #include "net/layers/MaxPoolingLayer.h"
+#include <chrono>
+
+#define TIME_MEASURE true
 
 using std::cout;
+using namespace std::chrono;
 
 int main()
 {
-	cout << "-- CNN Reference Test on CPU --\n" << endl;
+#if TIME_MEASURE
+    size_t init_duration_microseconds = 0;
+    high_resolution_clock::time_point t_init_start = high_resolution_clock::now();
+#endif
+
+    cout << "-- CNN Reference Test on CPU --\n" << endl;
     cout << "Loading Image Data..." << flush;
 
     MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_cpu/data", 0.9);
@@ -36,31 +45,35 @@ int main()
     network->setValidationData(validationData);
     network->setTestData(testData);
 
-    network->add(new ConvolutionalLayer(64, 5, 1));
-    network->add(new ReluLayer());
-    //network->add(new MaxPoolingLayer(2, 2));
-    //network->add(new ConvolutionalLayer(32, 5, 1));
+    //network->add(new ConvolutionalLayer(6, 5, 1));
     //network->add(new ReluLayer());
-    network->add(new MaxPoolingLayer(2, 2));
-    network->add(new ConvolutionalLayer(16, 5, 1));
-    network->add(new ReluLayer());
-    network->add(new MaxPoolingLayer(2, 2));
-    //network->add(new FullyConnectedLayer(1200));
-    //network->add(new SigmoidLayer());
-    network->add(new FullyConnectedLayer(100));
+    //network->add(new MaxPoolingLayer(2, 2));
+    //network->add(new ConvolutionalLayer(16, 5, 1));
+    //network->add(new ReluLayer());
+    //network->add(new MaxPoolingLayer(2, 2));
+    network->add(new FullyConnectedLayer(50));
     network->add(new SigmoidLayer());
     network->add(new FullyConnectedLayer(10));
     network->add(new SigmoidLayer());
     network->add(new SoftmaxLayer(10));
-    //network->add(new CrossEntropyLossLayer(10));
-    network->add(new QuadraticLossLayer(10));
+    network->add(new CrossEntropyLossLayer(10));
+    //network->add(new QuadraticLossLayer(10));
 
     network->init();
+
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_init_stop = high_resolution_clock::now();
+    init_duration_microseconds = duration_cast<milliseconds>(t_init_stop-t_init_start).count();
+#endif
+
+    std::cout << "Init duration microseconds: " << init_duration_microseconds << std::endl;
 
     do{
         network->trainEpoch();
         network->testEpoch();
     }while(network->getError() > 0.07);
+
+
 
     delete network;
 }

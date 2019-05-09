@@ -31,6 +31,11 @@ private:
 
     double error = 0.0;
 
+    size_t sumForwardDurationsMicroseconds = 0;
+    size_t sumBackwardDurationsMicroseconds = 0;
+    size_t averageForwardDuration = 0;
+    size_t averageBackwardDuration = 0;
+
 public:
     Network(double learningRate, size_t batchSize);
 

@@ -4,6 +4,13 @@
 #include "layers/FullyConnectedLayer.h"
 #include "layers/ConvolutionalLayer.h"
 #include "layers/QuadraticLossLayer.h"
+#include <chrono>
+
+#define TIME_MEASURE true
+
+#if TIME_MEASURE
+using namespace std::chrono;
+#endif
 
 Network::Network(double learningRate, size_t batchSize) {
     auto* inputLayer = new InputLayer();
@@ -60,6 +67,9 @@ void Network::trainEpoch() {
         batch *= (TRAIN_DATA_SIZE - 1);
 
         for (size_t i = 0; i < BATCH_SIZE; i++) {
+#if TIME_MEASURE
+            high_resolution_clock::time_point t_forward_start = high_resolution_clock::now();
+#endif
             //FeedForward
             layers.at(0)->setInput(trainData[batch[i]]->getImageData());
             for(size_t layerIdx = 0; layerIdx < layers.size(); ++layerIdx){
@@ -72,11 +82,22 @@ void Network::trainEpoch() {
                     sumLoss += ((QuadraticLossLayer*)layers.at(layerIdx))->getLoss();
                 }
             }
+#if TIME_MEASURE
+            high_resolution_clock::time_point t_forward_stop = high_resolution_clock::now();
+            sumForwardDurationsMicroseconds += duration_cast<microseconds>(t_forward_stop-t_forward_start).count();
+#endif
 
+#if TIME_MEASURE
+            high_resolution_clock::time_point t_backprop_start = high_resolution_clock::now();
+#endif
             //Backpropagation
             for(size_t layerIdx = layers.size()-1; layerIdx > 0; --layerIdx){
                 layers.at(layerIdx)->backPropagate();
             }
+#if TIME_MEASURE
+            high_resolution_clock::time_point t_backprop_stop = high_resolution_clock::now();
+            sumBackwardDurationsMicroseconds += duration_cast<microseconds>(t_backprop_stop-t_backprop_start).count();
+#endif
         }
 
         //Update Weights and Biases
@@ -91,7 +112,18 @@ void Network::trainEpoch() {
         }
     }
 
+#if TIME_MEASURE
+    averageForwardDuration = sumForwardDurationsMicroseconds / (NUM_BATCHES*BATCH_SIZE);
+    averageBackwardDuration = sumBackwardDurationsMicroseconds / (NUM_BATCHES*BATCH_SIZE);
+#endif
+
     std::cout << "Average loss: " << sumLoss / (BATCH_SIZE * NUM_BATCHES) << std::endl;
+//    std::cout << "Init duration in microseconds: " << init_duration_microseconds << std::endl;
+    std::cout << "Average forward duration in microseconds: " << averageForwardDuration << std::endl;
+    std::cout << "Average backward duration in microseconds: " << averageBackwardDuration << std::endl;
+    std::cout << "Total forward duration in microseconds: " << sumForwardDurationsMicroseconds << std::endl;
+    std::cout << "Total backward duration in microseconds: " << sumBackwardDurationsMicroseconds << std::endl;
+
 
     double correctImages = 0.0;
     /*
