@@ -3,6 +3,13 @@
 //
 
 #include "ConvolutionalLayer.h"
+#include <chrono>
+
+#define TIME_MEASURE true
+
+#if TIME_MEASURE
+using namespace std::chrono;
+#endif
 
 ConvolutionalLayer::ConvolutionalLayer(size_t numFilters, size_t filterSize, size_t stride)
     : numFilters(numFilters), filterSize(filterSize), stride(stride) {
@@ -32,6 +39,10 @@ void ConvolutionalLayer::init() {
 }
 
 void ConvolutionalLayer::feedForward() {
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_forward_start = high_resolution_clock::now();
+#endif
+
     this->input = getBeforeLayer()->getOutput();
 
     // Output cube initialization.
@@ -49,9 +60,18 @@ void ConvolutionalLayer::feedForward() {
                         ),
                         arma::vectorise(filters[fidx]));
     }
+
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_forward_stop = high_resolution_clock::now();
+    forwardDuration += duration_cast<microseconds>(t_forward_stop-t_forward_start).count();
+#endif
 }
 
 void ConvolutionalLayer::backPropagate() {
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_backward_start = high_resolution_clock::now();
+#endif
+
     arma::cube upstreamGradient = getAfterLayer()->getGradientInput();
 
     // Initialize gradient wrt input. Note that the dimensions are same as those
@@ -100,6 +120,11 @@ void ConvolutionalLayer::backPropagate() {
     // Update the accumulated gradient wrt filters.
     for (size_t fidx = 0; fidx < numFilters; fidx++)
         accumulatedNablaFilters[fidx] += nablaFilters[fidx];
+
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_backward_stop = high_resolution_clock::now();
+    backwardDuration += duration_cast<microseconds>(t_backward_stop-t_backward_start).count();
+#endif
 }
 
 double ConvolutionalLayer::getRandomVal(double mean, double variance) {

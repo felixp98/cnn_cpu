@@ -32,6 +32,9 @@ protected:
     arma::vec expectedOutput;
 
 public:
+    size_t forwardDuration = 0;
+    size_t backwardDuration = 0;
+
     virtual void init() = 0;
     virtual void feedForward() = 0;
     virtual void backPropagate() = 0;

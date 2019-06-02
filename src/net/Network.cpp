@@ -124,6 +124,10 @@ void Network::trainEpoch() {
     std::cout << "Total forward duration in microseconds: " << sumForwardDurationsMicroseconds << std::endl;
     std::cout << "Total backward duration in microseconds: " << sumBackwardDurationsMicroseconds << std::endl;
 
+    for(size_t layerIdx = 0; layerIdx < layers.size(); layerIdx++){
+        std::cout << "Layer #" << (layerIdx+1) << " " << layers[layerIdx]->getType() << " forward average: " << layers[layerIdx]->forwardDuration/TRAIN_DATA_SIZE << std::endl;
+        std::cout << "Layer #" << (layerIdx+1) << " " << layers[layerIdx]->getType() << " backward average: " << layers[layerIdx]->backwardDuration/TRAIN_DATA_SIZE << std::endl;
+    }
 
     double correctImages = 0.0;
     /*

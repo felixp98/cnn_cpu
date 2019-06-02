@@ -1,4 +1,11 @@
 #include "FullyConnectedLayer.h"
+#include <chrono>
+
+#define TIME_MEASURE true
+
+#if TIME_MEASURE
+using namespace std::chrono;
+#endif
 
 FullyConnectedLayer::FullyConnectedLayer(size_t numOutputs)
 : numOutputs(numOutputs) {
@@ -33,14 +40,27 @@ void FullyConnectedLayer::init() {
 }
 
 void FullyConnectedLayer::feedForward() {
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_forward_start = high_resolution_clock::now();
+#endif
+
     this->input = getBeforeLayer()->getOutput();
 
     arma::vec flatInput = arma::vectorise(input);
     output.slice(0).col(0) = (weights * flatInput) + biases;
     //output /= 100.0;
+
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_forward_stop = high_resolution_clock::now();
+    forwardDuration += duration_cast<microseconds>(t_forward_stop-t_forward_start).count();
+#endif
 }
 
 void FullyConnectedLayer::backPropagate() {
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_backward_start = high_resolution_clock::now();
+#endif
+
     arma::vec upstreamGradient = arma::vectorise(getAfterLayer()->getGradientInput());
 
     arma::vec gradInputVec = arma::zeros(inputHeight * inputWidth * inputDepth);
@@ -58,6 +78,11 @@ void FullyConnectedLayer::backPropagate() {
 
     nablaBiases = upstreamGradient;
     accumulatedNablaBiases += nablaBiases;
+
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_backward_stop = high_resolution_clock::now();
+    backwardDuration += duration_cast<microseconds>(t_backward_stop-t_backward_start).count();
+#endif
 }
 
 void FullyConnectedLayer::updateWeightsAndBiases(size_t batchSize, double learningRate) {

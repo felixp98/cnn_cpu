@@ -1,4 +1,11 @@
 #include "MaxPoolingLayer.h"
+#include <chrono>
+
+#define TIME_MEASURE true
+
+#if TIME_MEASURE
+using namespace std::chrono;
+#endif
 
 MaxPoolingLayer::MaxPoolingLayer(size_t poolingSize, size_t stride)  :
         poolingSize(poolingSize),
@@ -20,6 +27,10 @@ void MaxPoolingLayer::init() {
 }
 
 void MaxPoolingLayer::feedForward() {
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_forward_start = high_resolution_clock::now();
+#endif
+
     this->input = getBeforeLayer()->getOutput();
 
     output = arma::zeros(outputHeight, outputWidth, outputDepth);
@@ -31,9 +42,18 @@ void MaxPoolingLayer::feedForward() {
             }
         }
     }
+
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_forward_stop = high_resolution_clock::now();
+    forwardDuration += duration_cast<microseconds>(t_forward_stop-t_forward_start).count();
+#endif
 }
 
 void MaxPoolingLayer::backPropagate() {
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_backward_start = high_resolution_clock::now();
+#endif
+
     arma::cube upstreamGradient = getAfterLayer()->getGradientInput();
 
     gradientInput = arma::zeros(inputHeight, inputWidth, inputDepth);
@@ -56,5 +76,9 @@ void MaxPoolingLayer::backPropagate() {
             }
         }
     }
+#if TIME_MEASURE
+    high_resolution_clock::time_point t_backward_stop = high_resolution_clock::now();
+    backwardDuration += duration_cast<microseconds>(t_backward_stop-t_backward_start).count();
+#endif
 }
 

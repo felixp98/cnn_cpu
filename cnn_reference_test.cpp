@@ -19,14 +19,14 @@ using namespace std::chrono;
 int main()
 {
 #if TIME_MEASURE
-    size_t init_duration_microseconds = 0;
+    size_t init_duration_milliseconds = 0;
     high_resolution_clock::time_point t_init_start = high_resolution_clock::now();
 #endif
 
     cout << "-- CNN Reference Test on CPU --\n" << endl;
     cout << "Loading Image Data..." << flush;
 
-    MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_cpu/data", 0.9);
+    MnistDataLoader mdLoader("/home/felix/CLionProjects/cnn_cpu/data", 1.0);
 
     cout << "done\n" << endl;
 
@@ -45,13 +45,15 @@ int main()
     network->setValidationData(validationData);
     network->setTestData(testData);
 
-    //network->add(new ConvolutionalLayer(6, 5, 1));
-    //network->add(new ReluLayer());
-    //network->add(new MaxPoolingLayer(2, 2));
-    //network->add(new ConvolutionalLayer(16, 5, 1));
-    //network->add(new ReluLayer());
-    //network->add(new MaxPoolingLayer(2, 2));
-    network->add(new FullyConnectedLayer(50));
+    network->add(new ConvolutionalLayer(6, 5, 1));
+    network->add(new ReluLayer());
+    network->add(new MaxPoolingLayer(2, 2));
+    network->add(new ConvolutionalLayer(16, 5, 1));
+    network->add(new ReluLayer());
+    network->add(new MaxPoolingLayer(2, 2));
+    network->add(new FullyConnectedLayer(120));
+    network->add(new SigmoidLayer());
+    network->add(new FullyConnectedLayer(84));
     network->add(new SigmoidLayer());
     network->add(new FullyConnectedLayer(10));
     network->add(new SigmoidLayer());
@@ -63,16 +65,27 @@ int main()
 
 #if TIME_MEASURE
     high_resolution_clock::time_point t_init_stop = high_resolution_clock::now();
-    init_duration_microseconds = duration_cast<milliseconds>(t_init_stop-t_init_start).count();
+    init_duration_milliseconds = duration_cast<milliseconds>(t_init_stop-t_init_start).count();
 #endif
 
-    std::cout << "Init duration microseconds: " << init_duration_microseconds << std::endl;
+    std::cout << "Init duration milliseconds: " << init_duration_milliseconds << std::endl;
+
+    int epochCounter=0;
+    size_t train_duration = 0;
 
     do{
+#if TIME_MEASURE
+        high_resolution_clock::time_point t_train_start = high_resolution_clock::now();
+#endif
         network->trainEpoch();
+#if TIME_MEASURE
+        high_resolution_clock::time_point t_train_stop = high_resolution_clock::now();
+        train_duration += duration_cast<seconds>(t_train_stop-t_train_start).count();
+#endif
         network->testEpoch();
-    }while(network->getError() > 0.07);
+    }while((++epochCounter)<1);
 
+    std::cout << "Train duration seconds: " << train_duration << std::endl;
 
 
     delete network;
